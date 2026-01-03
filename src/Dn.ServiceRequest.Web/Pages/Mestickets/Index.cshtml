@@ -1,0 +1,230 @@
+@page
+@model Dn.ServiceRequest.Web.Pages.Mestickets.Index
+@{
+    Layout = "Layouts/_HorizontalLayout";
+    ViewData["Title"] = "Mes tickets - HR Service Request";
+    ViewData["LoadServiceProxyScript"] = true;
+}
+
+
+@section VendorStyles {
+    <link rel="stylesheet" href="~/vendor/libs/nouislider/nouislider.dist.css" />
+    <link rel="stylesheet" href="~/vendor/libs/swiper/swiper.dist.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/apex-charts/apex-charts.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/dropzone/dropzone.css" />
+    <link rel="stylesheet" href="~/css/app-chat.css" />
+ } <link rel="stylesheet" href="~/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css" />
+
+@section PageStyles {
+    <link rel="stylesheet" href="~/vendor/css/pages/front-page-landing.dist.css" />
+}
+@section VendorScripts {
+    <script src="~/vendor/libs/nouislider/nouislider.dist.js"></script>
+    <script src="~/vendor/libs/swiper/swiper.dist.js"></script>    
+    <script src="~/assets/vendor/libs/apex-charts/apexcharts.js"></script>    
+    <script src="~/assets/vendor/libs/dropzone/dropzone.js"></script>
+    <script src="~/libs/abp/core/abp.js"></script>
+    <script src="~/libs/abp/jquery/abp.jquery.js"></script>
+    <script src="~/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
+    <script src="~/assets/js/tables-datatables-basic.js"></script>
+}
+
+@section PageScripts {
+    <script src="~/js/front-page-landing.dist.js"></script>
+    <script src="~/js/appChat.js"></script>
+    <!--abp-script src="/client-proxies/app-proxy.js"/-->
+      <script src="~/Abp/ServiceProxyScript"></script>
+   <script src="~/js/app-mestickets.js"></script>
+
+   
+}
+
+@* ************** Content ************** *@
+<div data-bs-spy="scroll" class="scrollspy-exampl">
+
+    <!-- Hero: End -->
+    <!-- Useful features: Start -->
+    <div style="/*margin-top:-70px;">
+        <div class="row g-6">
+           
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title mb-4">Tickets Ouverts</h3>
+                    <div class="card-datatable table-responsive text-nowrap p-3 ">
+                        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                        </div>
+                        <table id="TableauDeMesTickets" class="datatables-basic table">
+                            <thead>
+                                <tr>
+                                    <td>Action</td>
+                                    <td>Numero</td>
+                                    <td>Type</td>
+                                     <td>Objet</td>
+                                    <td>Status</td>
+                                    <td>Progression</td>
+                                    <td>Categorie</td>
+                                    <td>Date de création</td>
+                                    <td>Date d'estimation de clôture</td>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
+                                <!-- 1 -->
+                                <!--tr>
+                                    <td>
+                                        <a href="/tickets/edit" class="btn btn-primary">
+                                            <i class="ti ti-align-justified"></i> Détails
+                                        </a>
+                                    </td>
+                                    <td>INC452603</td>
+                                    <td>Demande d’attestation de travail</td>
+                                    <td>
+                                        <span class="badge bg-label-success" style="height:25px;">Open</span>
+                                    </td>
+                                    <td>
+                                        50 %
+                                        <div class="progress" style="height:15px;">
+                                            <div class="progress-bar progress-bar-striped bg-primary"
+                                                style="width: 50%;"></div>
+                                        </div>
+                                    </td>
+                                    <td>Administration du personnel</td>
+                                    <td>2025-12-01 09:00:00</td>
+                                    <td>2025-12-02 10:00:00</td>
+                                </tr>
+
+                                
+                                <tr>
+                                    <td>
+                                        <a href="/tickets/edit" class="btn btn-primary">
+                                            <i class="ti ti-align-justified"></i> Détails
+                                        </a>
+                                    </td>
+                                    <td>INC452604</td>
+                                    <td>Demande de fiche de paie</td>
+                                    <td>
+                                        <span class="badge bg-label-warning" style="height:25px;">WorkInProgress</span>
+                                    </td>
+                                    <td>
+                                        30 %
+                                        <div class="progress" style="height:15px;">
+                                            <div class="progress-bar progress-bar-striped bg-secondary"
+                                                style="width: 30%;"></div>
+                                        </div>
+                                    </td>
+                                    <td>Administration du personnel</td>
+                                    <td>2025-11-28 08:30:00</td>
+                                    <td>2025-12-01 12:00:00</td>
+                                </tr>
+
+                             
+                                <tr>
+                                    <td>
+                                        <a href="/tickets/edit" class="btn btn-primary">
+                                            <i class="ti ti-align-justified"></i> Détails
+                                        </a>
+                                    </td>
+                                    <td>INC452605</td>
+                                    <td>Correction d’erreur sur bulletin</td>
+                                    <td>
+                                        <span class="badge bg-label-warning" style="height:25px;">WorkInProgress</span>
+                                    </td>
+                                    <td>
+                                        70 %
+                                        <div class="progress" style="height:15px;">
+                                            <div class="progress-bar progress-bar-striped bg-primary"
+                                                style="width: 70%;"></div>
+                                        </div>
+                                    </td>
+                                    <td>Administration du personnel</td>
+                                    <td>2025-12-03 11:15:00</td>
+                                    <td>2025-12-04 14:00:00</td>
+                                </tr>
+
+                              
+                                <tr>
+                                    <td>
+                                        <a href="/tickets/edit" class="btn btn-primary">
+                                            <i class="ti ti-align-justified"></i> Détails
+                                        </a>
+                                    </td>
+                                    <td>INC452606</td>
+                                    <td>Requête de prime de performance</td>
+                                    <td>
+                                        <span class="badge bg-label-secondary" style="height:25px;">Closed</span>
+                                    </td>
+                                    <td>
+                                        100 %
+                                        <div class="progress" style="height:15px;">
+                                            <div class="progress-bar progress-bar-striped bg-primary"
+                                                style="width: 100%;"></div>
+                                        </div>
+                                    </td>
+                                    <td>Rémunération et avantages</td>
+                                    <td>2025-11-20 10:00:00</td>
+                                    <td>2025-11-25 16:00:00</td>
+                                </tr>
+
+                               
+                                <tr>
+                                    <td>
+                                        <a href="/tickets/edit" class="btn btn-primary">
+                                            <i class="ti ti-align-justified"></i> Détails
+                                        </a>
+                                    </td>
+                                    <td>INC452607</td>
+                                    <td>Réclamation sur salaire</td>
+                                    <td>
+                                        <span class="badge bg-label-danger" style="height:25px;">Pending</span>
+                                    </td>
+                                    <td>
+                                        20 %
+                                        <div class="progress" style="height:15px;">
+                                            <div class="progress-bar progress-bar-striped bg-secondary"
+                                                style="width: 20%;"></div>
+                                        </div>
+                                    </td>
+                                    <td>Rémunération et avantages</td>
+                                    <td>2025-12-02 09:45:00</td>
+                                    <td>2025-12-05 10:00:00</td>
+                                </tr>
+
+                              
+                                <tr>
+                                    <td>
+                                        <a href="/tickets/edit" class="btn btn-primary">
+                                            <i class="ti ti-align-justified"></i> Détails
+                                        </a>
+                                    </td>
+                                    <td>INC452608</td>
+                                    <td>Demande de recrutement</td>
+                                    <td>
+                                        <span class="badge bg-label-success" style="height:25px;">Open</span>
+                                    </td>
+                                    <td>
+                                        40 %
+                                        <div class="progress" style="height:15px;">
+                                            <div class="progress-bar progress-bar-striped bg-secondary"
+                                                style="width: 40%;"></div>
+                                        </div>
+                                    </td>
+                                    <td>Recrutement et intégration</td>
+                                    <td>2025-11-25 08:30:00</td>
+                                    <td>2025-11-27 10:00:00</td>
+                                </tr-->
+
+                            </tbody>
+                        </table>
+
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Useful features: End -->
+
+</div>

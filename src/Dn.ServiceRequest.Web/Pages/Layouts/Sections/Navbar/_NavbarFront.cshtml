@@ -1,0 +1,128 @@
+@{
+  TempData.Keep();
+  string? currentPage = Convert.ToString(ViewContext.RouteData.Values["Page"])!;
+}
+
+@section VendorScripts{
+  <script src="~/vendor/js/dropdown-hover.js"></script>
+  <script src="~/vendor/js/mega-dropdown.js"></script>
+}
+
+<!-- Navbar: Start -->
+<nav class="layout-navbar shadow-none py-0">
+  <div class="container">
+    <div class="navbar navbar-expand-lg landing-navbar px-3 px-md-8">
+      <!-- Menu logo wrapper: Start -->
+      <div class="navbar-brand app-brand demo d-flex py-0 py-lg-2 me-4 me-xl-8">
+        <!-- Mobile menu toggle: Start-->
+        <button class="navbar-toggler border-0 px-0 me-4" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <i class="ti ti-menu-2 ti-lg align-middle text-heading fw-medium"></i>
+        </button>
+        <!-- Mobile menu toggle: End-->
+        <a href="/FrontPages/LandingPage" class="app-brand-link">
+          <span class="app-brand-logo"><img src="~/images/logo/brande.png" style="width:80%;"/></span>
+          <span class="app-brand-text demo menu-text fw-bold ms-2 ps-1"></span>
+        </a>
+      </div>
+      <!-- Menu logo wrapper: End -->
+      <!-- Menu wrapper: Start -->
+      <div class="collapse navbar-collapse landing-nav-menu" id="navbarSupportedContent">
+        <button class="navbar-toggler border-0 text-heading position-absolute end-0 top-0 scaleX-n1-rtl" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <i class="ti ti-x ti-lg"></i>
+        </button>
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link fw-medium" aria-current="page" asp-page="/FrontPages/LandingPage" asp-fragment="landingHero">Accueil</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link fw-medium" asp-page="/FrontPages/LandingPage" asp-fragment="landingFeatures">Formulaire</a>
+          </li>
+          
+          <li class="nav-item">
+            <a class="nav-link fw-medium" asp-page="/FrontPages/LandingPage" asp-fragment="landingTeam">Gestion de tickets</a>
+          </li>
+             <li class="nav-item">
+            <a class="nav-link fw-medium" aria-current="page" asp-page="/FrontPages/LandingPage" asp-fragment="landingHero">Mes tickets</a>
+          </li>
+       
+          <li class='nav-item mega-dropdown@((currentPage.StartsWith("/FrontPages/Pricing") || currentPage.StartsWith("/FrontPages/Payment") || currentPage.StartsWith("/FrontPages/Checkout") || currentPage.StartsWith("/FrontPages/HelpCenter")) ? " active open" : "")'>
+            <a href="javascript:void(0);" class="nav-link dropdown-toggle  mega-dropdown" aria-expanded="false" data-bs-toggle="mega-dropdown" data-trigger="hover">
+              <span data-i18n="Pages">Outils</span>
+            </a>
+            <div class="dropdown-menu" style="max-width:200px;">
+              <div class="row ">
+                <div class="col-12 col-lg">
+                 
+                  <ul class="nav flex-column">
+                    <li class='nav-item@(currentPage == "/FrontPages/PricingPage"  ? " active" : "")'>
+                      <a class="nav-link mega-dropdown-link" asp-page="/FrontPages/PricingPage">
+                        <i class='ti ti-circle me-1'></i>
+                        <span data-i18n="Pricing">Pricing</span>
+                      </a>
+                    </li>
+                    <li class='nav-item@(currentPage == "/FrontPages/PaymentPage"  ? " active" : "")'>
+                      <a class="nav-link mega-dropdown-link" asp-page="/FrontPages/PaymentPage">
+                        <i class='ti ti-circle me-1'></i>
+                        <span data-i18n="Payment">Payment</span>
+                      </a>
+                    </li>
+                    <li class='nav-item@(currentPage == "/FrontPages/CheckoutPage"  ? " active" : "")'>
+                      <a class="nav-link mega-dropdown-link" asp-page="/FrontPages/CheckoutPage">
+                        <i class='ti ti-circle me-1'></i>
+                        <span data-i18n="Checkout">Checkout</span>
+                      </a>
+                    </li>
+                    <li class='nav-item@(currentPage == "/FrontPages/HelpCenterLanding"  ? " active" : "")'>
+                      <a class="nav-link mega-dropdown-link" asp-page="/FrontPages/HelpCenterLanding">
+                        <i class='ti ti-circle me-1'></i>
+                        <span data-i18n="Help Center">Help Center</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+            
+              </div>
+            </div>
+          </li>
+       
+        </ul>
+      </div>
+      <div class="landing-menu-overlay d-lg-none"></div>
+      <!-- Menu wrapper: End -->
+      <!-- Toolbar: Start -->
+      <ul class="navbar-nav flex-row align-items-center ms-auto">
+
+        <!-- Style Switcher -->
+        <li class="nav-item dropdown-style-switcher dropdown me-2 me-xl-1">
+          <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+            <i class='ti ti-lg'></i>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end dropdown-styles">
+            <li>
+              <a class="dropdown-item" href="javascript:void(0);" data-theme="light">
+                <span class="align-middle"><i class='ti ti-sun me-3'></i>Light</span>
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="javascript:void(0);" data-theme="dark">
+                <span class="align-middle"><i class="ti ti-moon-stars me-3"></i>Dark</span>
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="javascript:void(0);" data-theme="system">
+                <span class="align-middle"><i class="ti ti-device-desktop-analytics me-3"></i>System</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <!-- / Style Switcher-->
+
+        <!-- navbar button: Start -->
+        <li>
+          <a href="/Account/Login" class="btn btn-primary" target="_blank"><span class="tf-icons ti ti-login scaleX-n1-rtl me-md-1"></span><span class="d-none d-md-block">Login/Register</span></a>
+        </li>
+        <!-- navbar button: End -->
+      </ul>
+    </div>
+  </div>
+</nav>

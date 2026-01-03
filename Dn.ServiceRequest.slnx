@@ -1,0 +1,40 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Dn.ServiceRequest.Application.Contracts/Dn.ServiceRequest.Application.Contracts.csproj" />
+    <Project Path="src/Dn.ServiceRequest.Application/Dn.ServiceRequest.Application.csproj" />
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <Project Path="src/Dn.ServiceRequest.DbMigrator/Dn.ServiceRequest.DbMigrator.csproj" />
+    <Project Path="src/Dn.ServiceRequest.Domain.Shared/Dn.ServiceRequest.Domain.Shared.csproj" />
+    <Project Path="src/Dn.ServiceRequest.Domain/Dn.ServiceRequest.Domain.csproj" />
+    <Project Path="src/Dn.ServiceRequest.EntityFrameworkCore/Dn.ServiceRequest.EntityFrameworkCore.csproj" />
+    <Project Path="src/Dn.ServiceRequest.HttpApi.Client/Dn.ServiceRequest.HttpApi.Client.csproj" />
+    
+    
+    <Project Path="src/Dn.ServiceRequest.HttpApi/Dn.ServiceRequest.HttpApi.csproj" />
+    
+    
+    <Project Path="src/Dn.ServiceRequest.Web/Dn.ServiceRequest.Web.csproj" />
+  </Folder>
+  <Folder Name="/src/Dn.ServiceRequest.Web/" />
+  <Folder Name="/src/Dn.ServiceRequest.Web/Pages/" />
+  <Folder Name="/src/Dn.ServiceRequest.Web/Pages/Layouts/">
+    <Project Path="src/Dn.ServiceRequest.Web/Pages/Layouts/WebApplication1/WebApplication1.csproj" />
+  </Folder>
+  <Folder Name="/test/">
+    <Project Path="test/Dn.ServiceRequest.Application.Tests/Dn.ServiceRequest.Application.Tests.csproj" />
+    <Project Path="test/Dn.ServiceRequest.Domain.Tests/Dn.ServiceRequest.Domain.Tests.csproj" />
+    <Project Path="test/Dn.ServiceRequest.EntityFrameworkCore.Tests/Dn.ServiceRequest.EntityFrameworkCore.Tests.csproj" />
+    <Project Path="test/Dn.ServiceRequest.HttpApi.Client.ConsoleTestApp/Dn.ServiceRequest.HttpApi.Client.ConsoleTestApp.csproj" />
+    
+    <Project Path="test/Dn.ServiceRequest.TestBase/Dn.ServiceRequest.TestBase.csproj" />
+    <Project Path="test/Dn.ServiceRequest.Web.Tests/Dn.ServiceRequest.Web.Tests.csproj" />
+  </Folder>
+</Solution>

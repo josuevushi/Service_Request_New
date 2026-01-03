@@ -1,0 +1,643 @@
+@page "{id:guid}"
+@model Dn.ServiceRequest.Web.Pages.Tickets.Edit
+@{
+    Layout = "Layouts/_HorizontalLayout";
+    ViewData["Title"] = "Ticket  - HR Service Request";
+}
+
+@section VendorStyles {
+    <link rel="stylesheet" href="~/vendor/libs/nouislider/nouislider.dist.css" />
+    <link rel="stylesheet" href="~/vendor/libs/swiper/swiper.dist.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/apex-charts/apex-charts.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/dropzone/dropzone.css" />
+}
+@section PageStyles {
+    <link rel="stylesheet" href="~/vendor/css/pages/front-page-landing.dist.css" />
+    
+    <link rel="stylesheet" href="~/assets/vendor/libs/select2/select2.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/tagify/tagify.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/bootstrap-select/bootstrap-select.css" />
+}
+@section VendorScripts {
+    <script src="~/vendor/libs/nouislider/nouislider.dist.js"></script>
+    <script src="~/vendor/libs/swiper/swiper.dist.js"></script>    
+    <script src="~/assets/vendor/libs/apex-charts/apexcharts.js"></script>    
+    <script src="~/assets/vendor/libs/dropzone/dropzone.js"></script>
+    <script src="~/libs/abp/core/abp.js"></script>
+    <script src="~/libs/abp/jquery/abp.jquery.js"></script>
+    <script src="~/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
+    <script src="~/assets/js/tables-datatables-basic.js"></script>
+    
+}
+
+@section PageScripts {
+
+    <!--script src="~/js/front-page-landing.dist.js"></script-->
+      <script src="~/assets/vendor/libs/select2/select2.js"></script>
+    <script src="~/assets/vendor/libs/tagify/tagify.js"></script>
+    <script src="~/assets/vendor/libs/bootstrap-select/bootstrap-select.js"></script>
+
+    <script src="~/js/appChat.js"></script>
+    <!--abp-script src="/client-proxies/app-proxy.js"/-->
+      <script src="~/Abp/ServiceProxyScript"></script>
+    <script src="~/js/ticket.js"></script>  
+    <script src="~/js/ticketEdit.js"></script>  
+
+
+   
+}
+<style>
+.upload-zone {
+  border: 2px dashed #6c757d;
+  border-radius: 12px;
+  padding: 30px;
+  text-align: center;
+  cursor: pointer;
+  transition: .25s;
+  background: #f8f9fa;
+}
+
+.upload-zone:hover {
+  border-color: #0d6efd;
+  background: #eef5ff;
+}
+
+.file-list li {
+  list-style: none;
+  padding: 10px;
+  background: #f1f3f5;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+
+     
+
+        .forum-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #111827;
+            text-align: center;
+        }
+
+        .comment-form {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 20px;
+            /*box-shadow: 0 4px 10px rgba(0,0,0,0.05);*/
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .comment-form textarea {
+            width: 100%;
+            max-width: 600px;
+            height: 100px;
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            padding: 2px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            resize: vertical;
+        }
+
+        .comment-form button {
+            margin-top: 10px;
+            background-color: #2563eb;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .comment-form button:hover {
+            background-color: #1d4ed8;
+        }
+
+        .comment-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 10px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .user-info {
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .role-badge {
+            background: #eef2ff;
+            color: #4338ca;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-left: 8px;
+        }
+
+        .date {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .comment-text {
+            color: #374151;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-top: 6px;
+        }
+        .demo-inline-spacing form {
+    display: inline-block;
+    margin: 0;
+}
+
+
+</style>
+@* ************** Content ************** *@
+<div data-bs-spy="scroll" class="scrollspy-exampl">
+
+    <!-- Hero: End -->
+    <!-- Useful features: Start -->
+    <div class="container-xxl flex-grow-1 container-p-y" style="margin-top:-70px;">
+        <div class="row g-6">
+            <div class="row g-6">
+                <div id="alert-container"></div>
+                <div class="demo-inline-spacing d-flex align-items-center gap-2">
+                    <!--button id="StartButtonS" type="button" class="btn btn-primary hidden" disabled> <span class="spinner-border spinner-border-sm me-2"></span> Démarer le travaille</button-->
+
+                    @{
+                        var status = Model.Ticket.Status.ToString();
+                    }
+
+                    @if (status == "Open")
+                    {
+                   <form method="get" action="/tickets/start/@Model.Id">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="ti ti-player-play"></i> Démarrer le travail
+                        </button>
+                    </form>
+
+                        <button id="SaveButton" type="button" class="btn btn-primary">
+                            <i class="ti ti-saves"></i> Enregistrer
+                        </button>
+                    }
+                    else if (status == "WorkInProgress")
+                    {
+                        <button id="SaveButton" type="button" class="btn btn-primary">
+                            <i class="ti ti-save"></i> Enregistrer
+                        </button>
+
+                          <form method="get" action="/tickets/pending/@Model.Id">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="ti ti-device-ipad-horizontal-pause"></i> Suspendre
+                        </button>
+                    </form>
+                    
+                          <form method="get" action="/tickets/close/@Model.Id">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="ti ti-x"></i> Clôturer
+                        </button>
+                    </form>
+
+                       
+                    }
+                    else if (status == "Pending")
+                    {
+                        <button id="SaveButton" type="button" class="btn btn-primary">
+                            <i class="ti ti-save"></i> Enregistrer
+                        </button>
+
+                       <form method="get" action="/tickets/close/@Model.Id">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="ti ti-x"></i> Clôturer
+                        </button>
+                    </form>
+                    }
+                    @* Close → rien à afficher *@
+
+                </div>
+                <!--/ Upcoming Webinar -->
+                <!-- Source Visit -->
+                <div class="col-xxl-4 col-xl-6 col-lg-12 ">
+                    <div class="card h-100">
+                        <div class="card-header d-flex justify-content-between">
+                            <div class="card-title mb-0">
+                                <h5 class="mb-1">@Model.Ticket.Numero</h5>
+                                <p class="card-subtitle">Numero du ticket</p>
+                            </div>
+                          @{
+    string badgeClass = Model.Ticket.Status switch
+    {
+        "Open" => "bg-label-secondary",
+        "WorkInProgress" => "bg-label-warning",
+        "Pending" => "bg-label-danger",
+        "Close" => "bg-label-success",
+        _ => "bg-label-secondary"
+    };
+}
+
+<span class="badge @badgeClass" style="height:25px;">
+    @Model.Ticket.Status.ToString()
+</span>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="nav-align-top">
+                                <ul class="nav nav-tabs nav-fill rounded-0 timeline-indicator-advanced" role="tablist">
+                                    <li class="nav-item">
+                                        <button type="button"
+                                                class="nav-link active"
+                                                role="tab"
+                                                data-bs-toggle="tab"
+                                                data-bs-target="#navs-justified-new1"
+                                                aria-controls="navs-justified-new"
+                                                aria-selected="true">
+                                            Générales
+                                        </button>
+                                    </li>
+                                  
+                                    <li class="nav-item">
+                                        <button type="button"
+                                                class="nav-link"
+                                                role="tab"
+                                                data-bs-toggle="tab"
+                                                data-bs-target="#navs-justified-link-preparing2"
+                                                aria-controls="navs-justified-link-preparing"
+                                                aria-selected="false">
+                                           Autre détails
+                                        </button>
+                                    </li>
+
+
+                                </ul>
+                                <div class="tab-content border-0 mx-1">
+                                    <div class="tab-pane fade show active" id="navs-justified-new1" role="tabpanel">
+                                        <form>
+                                            <div class="mb-6">
+                                                <label class="form-label" for="basic-default-fullname">Titre du problème</label>
+                                                 <input type="text"
+                                                    class="form-control"
+                                                    id="basic-default-fullname"
+                                                    value="@Model.Ticket.Objet" />  
+                                                  </div>
+                                            <div class="mb-6">
+                                                <label class="form-label" for="basic-default-message">Détails du problème</label>
+                                                <textarea id="basic-default-message" style="width: 100%; height: 350px;"
+                                                          class="form-control"
+                                                          placeholder="problème....">@Model.Ticket.Description</textarea>
+                                            </div>
+
+
+                                        </form>
+
+
+                                    </div>
+                                    <div class="tab-pane fade" id="navs-justified-link-preparing2" role="tabpanel">
+                                           <form>
+                                                <div class="mb-6" style="display: none;">
+                                                    <label class="form-label" for="basic-default-fullname">Id </label>
+                                                    <input type="text"
+                                                        class="form-control"
+                                                        id="ticketId"
+                                                        value="@Model.Ticket.Id" />  
+                                                </div>
+                                                <div class="mb-6" style="display: none;">
+                                                    <label class="form-label" for="basic-default-fullname">Pourcentage </label>
+                                                    <input type="text"
+                                                        class="form-control"
+                                                        id="pourcentageId"
+                                                        value="@Model.Ticket.Pourcentage" />  
+                                                </div>
+                                                 <div class="mb-6">
+                                                    <label class="form-label" for="basic-default-fullname">Groupe d'utilisateur </label>
+                                                    <input type="text"
+                                                        class="form-control"
+                                                        id="basic-default-fullname"
+                                                        value="@Model.Ticket.Groupe" />  
+                                                </div>
+                                                 <div class="mb-6">
+                                                    <label class="form-label" for="basic-default-fullname">Assigné à </label>
+                                                    <select id="ticket-AssignTo"   class="form-control">
+                                                        <option>@Model.Ticket.AssignTo</option>
+                                                    </select>
+                                                    <input type="hidden"
+                                                        class="form-control hidden"
+                                                        id="basic-default-fullname"
+                                                        value="@Model.Ticket.AssignTo" />  
+                                                </div>
+                                                <div class="mb-6">
+                                                    <label class="form-label" for="basic-default-fullname">Crée par </label>
+                                                    <input type="text"
+                                                        class="form-control"
+                                                        id="basic-default-fullname"
+                                                        value="@Model.Ticket.CreatedBy" />  
+                                                </div>
+                                                   <div class="mb-6">
+                                                    <label class="form-label" for="basic-default-fullname">Categorie </label>
+                                                    <input type="text"
+                                                        class="form-control"
+                                                        id="basic-default-fullname"
+                                                        value="@Model.Ticket.Famille" />  
+                                                </div>
+                                                   <div class="mb-6">
+                                                    <label class="form-label" for="basic-default-fullname">Type </label>
+                                                    <input type="text"
+                                                        class="form-control"
+                                                        id="basic-default-fullname"
+                                                        value="@Model.Ticket.Type" />  
+                                                </div>
+                                                  <div class="mb-6">
+                                                    <label class="form-label" for="basic-default-fullname">Date de creation </label>
+                                                    <input type="text"
+                                                        class="form-control"
+                                                        id="basic-default-fullname"
+                                                        value="@Model.Ticket.CreationTime" />  
+                                                </div>
+                                                 <div class="mb-6">
+                                                    <label class="form-label" for="basic-default-fullname">Date estimer de cloture </label>
+                                                    <input type="text"
+                                                        class="form-control"
+                                                        id="basic-default-fullname"
+                                                        value="@Model.Ticket.EstimateDate" />  
+                                                </div>
+
+                                          
+
+
+                                        </form>
+
+                                        <!--ul class="timeline mb-0">
+                                            <li class="timeline-item timeline-item-transparent">
+                                                <span class="timeline-point timeline-point-info"></span>
+                                                <div class="timeline-event">
+                                                    <div class="timeline-header mb-3">
+                                                        <h6 class="mb-0">HR Business Partnerships (HRBP)</h6>
+                                                          </div>
+                                                          
+                                                </div>
+                                            </li>
+                                             <li class="timeline-item timeline-item-transparent">
+                                                <span class="timeline-point timeline-point-success"></span>
+                                                <div class="timeline-event">
+                                                    <div class="timeline-header mb-3">
+                                                        <h6 class="mb-0">Talent Mangament & Talent Acquisition</h6>
+                                                          </div>
+                                                          
+                                                </div>
+                                            </li>
+                                           <li class="timeline-item timeline-item-transparent">
+                                                <span class="timeline-point timeline-point-secondary"></span>
+                                                <div class="timeline-event">
+                                                    <div class="timeline-header mb-3">
+                                                        <h6 class="mb-0">Employee Relations (ER)</h6>
+                                                          </div>
+                                                          
+                                                </div>
+                                            </li>
+                                            
+                                        </ul-->
+
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Upcoming Webinar -->
+                <div class="col-xxl-4 col-md-6">
+                    <div class="card h-100">
+                        <div class="card-header d-flex align-items-center justify-content-between">
+                            <div class="card-title mb-0">
+                                <h5 class="mb-1">Détails du ticket</h5>
+                                <p class="card-subtitle">2024-10-01 11:23:00</p>
+                            </div>
+
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="nav-align-top">
+                                <ul class="nav nav-tabs nav-fill rounded-0 timeline-indicator-advanced" role="tablist">
+                                    <li class="nav-item">
+                                        <button type="button"
+                                                class="nav-link active"
+                                                role="tab"
+                                                data-bs-toggle="tab"
+                                                data-bs-target="#navs-justified-new"
+                                                aria-controls="navs-justified-new"
+                                                aria-selected="true">
+                                            Commentaires
+                                        </button>
+                                    </li>
+                                    <li class="nav-item">
+                                        <button type="button"
+                                                class="nav-link"
+                                                role="tab"
+                                                data-bs-toggle="tab"
+                                                data-bs-target="#navs-justified-link-preparing"
+                                                aria-controls="navs-justified-link-preparing"
+                                                aria-selected="false">
+                                            Pièces jointe
+                                        </button>
+                                    </li>
+                                    <!--li class="nav-item">
+                                        <button type="button"
+                                                class="nav-link"
+                                                role="tab"
+                                                data-bs-toggle="tab"
+                                                data-bs-target="#navs-justified-link-shipping"
+                                                aria-controls="navs-justified-link-shipping"
+                                                aria-selected="false">
+                                            Approbations
+                                        </button>
+                                    </li-->
+                                </ul>
+                                <div class="tab-content border-0 mx-1">
+                                    <div class="tab-pane fade show active" id="navs-justified-new" role="tabpanel" style="padding: 0px;"> 
+                                        <!--ul class="timeline mb-0">
+                                            <li class="timeline-item timeline-item-transparent">
+                                                <span class="timeline-point timeline-point-secondary"></span>
+                                                <div class="timeline-event">
+                                                    <div class="timeline-header mb-3">
+                                                        <h6 class="mb-0">Samuel KALENDI</h6>
+                                                        <small class="text-muted">2024-01-15 11:22:02</small>
+                                                    </div>
+                                                    <p class="mb-2">RH MIS</p>
+                                                   
+                                                </div>
+                                            </li>
+                                            <li class="timeline-item timeline-item-transparent">
+                                                <span class="timeline-point timeline-point-secondary"></span>
+                                                <div class="timeline-event">
+                                                    <div class="timeline-header mb-3">
+                                                        <h6 class="mb-0">Jenovic NGINAMAU</h6>
+                                                                 <small class="text-muted">2024-01-15 11:22:02</small>
+                                             
+                                                           </div>
+                                                    <p class="mb-2">Analyste RH</p>
+                                                   
+                                                </div>
+                                            </li>
+                                            <li class="timeline-item timeline-item-transparent">
+                                                <span class="timeline-point timeline-point-secondary"></span>
+                                                <div class="timeline-event">
+                                                    <div class="timeline-header mb-3">
+                                                        <h6 class="mb-0">Josue VUSHI</h6>
+                                                                 <small class="text-muted">2024-01-15 11:22:02</small>
+                                             
+                                                          </div>
+                                                    <p class="mb-2">Data Scientist</p>
+                                                  
+                                                </div>
+                                            </li>
+                                        </ul-->
+                                        <div class="containr">
+  
+    <!-- Formulaire ajout commentaire -->
+    <div class="comment-for" style="text-align: center;">
+        <textarea id="newComment" class="form-control" placeholder="Écrivez votre commentaire ici..."></textarea><br>
+    @if (Model.Ticket.Status.ToString() != "Close")
+    {
+        <button id="postComment" class="btn btn-secondary">
+            <i class="fa fa-plus" style="margin-right:5px;"></i>
+            Ajouter un commentaire
+        </button>
+    }
+   </div>
+
+    <!-- Liste des commentaires -->
+    <div id="commentsList">
+        <!--div class="comment-card">
+            <div class="comment-header">
+                <div class="user-info">
+                    Josué Vushi
+                    <span class="role-badge">Développeur</span>
+                </div>
+                <div class="date">26/12/2025 • 10:45</div>
+            </div>
+            <div class="comment-text">
+                J’ai rencontré un problème avec l’intégration du WebSocket dans l’environnement local.
+                Quelqu’un a-t-il déjà eu ce cas avec ABP Framework ?
+            </div>
+        </div>
+
+        <div class="comment-card">
+            <div class="comment-header">
+                <div class="user-info">
+                    Alain Mukendi
+                    <span class="role-badge">Développeur</span>
+                </div>
+                <div class="date">26/12/2025 • 11:02</div>
+            </div>
+            <div class="comment-text">
+                Oui, cela arrive souvent sans connexion internet.
+                Il faut vérifier la configuration du fallback long polling.
+            </div>
+        </div-->
+    </div>
+</div>
+                                    </div>
+                                    <div class="tab-pane fade" id="navs-justified-link-preparing" role="tabpanel">
+                                            <div class="mb-4">
+                                                <h5 class="mb-3">Pièces jointes</h5>
+
+                                                <!-- Zone d'upload unifiée -->
+                                                <div class="upload-zone" id="uploadZone">
+                                                    <p>Glissez-déposez vos fichiers ici ou cliquez pour sélectionner</p>
+                                                    <input type="file" id="fileInput" multiple hidden />
+                                                </div>
+
+                                                <!-- Liste unique pour tous les fichiers -->
+                                                <ul id="fileList" class="file-list mt-3"></ul>
+                                            </div>
+                                                                    
+                                    </div>
+                                    <div class="tab-pane fade" id="navs-justified-link-shipping" role="tabpanel">
+                                        <ul class="timeline mb-0">
+                                            <li class="timeline-item ps-6 border-left-dashed">
+                                                <span class="timeline-indicator-advanced timeline-indicator-success border-0 shadow-none">
+                                                    <i class="ti ti-circle-check"></i>
+                                                </span>
+                                                <div class="timeline-event ps-1">
+                                                    <div class="timeline-header">
+                                                        <small class="text-success text-uppercase">Approuvé</small>
+                                                    </div>
+                                                    <h6 class="my-50">KAYEMBE KANGOMA</h6>
+                                                    <p class="text-body mb-0">2024-01-25 11:05:00</p>
+                                                </div>
+                                            </li>
+                                            <li class="timeline-item ps-6 border-left-dashed">
+                                                <span class="timeline-indicator-advanced timeline-indicator-warning border-0 shadow-none">
+                                                    <i class="ti ti-progress-check"></i>
+                                                </span>
+                                                <div class="timeline-event ps-1">
+                                                    <div class="timeline-header">
+                                                        <small class="text-warning text-uppercase">En cours</small>
+                                                    </div>
+                                                    <h6 class="my-50">Carine MWABA</h6>
+                                                    <p class="text-body mb-0">2024-01-15 12:08:01</p>
+                                                </div>
+                                            </li>
+                                            <li class="timeline-item ps-6 border-left-dashed">
+                                                <span class="timeline-indicator-advanced timeline-indicator-default border-0 shadow-none">
+                                                    <i class="ti ti-progress"></i>
+                                                </span>
+                                                <div class="timeline-event ps-1">
+                                                    <div class="timeline-header">
+                                                        <small class="text-default text-uppercase">En attente</small>
+                                                    </div>
+                                                    <h6 class="my-50">
+Willy MULAMBA</h6>
+
+                                                </div>
+                                            </li>
+                                        </ul>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xxl-4 col-lg-6">
+                    <div class="card h-100">
+                        <div class="card-header d-flex align-items-center justify-content-between">
+                            <div class="card-title mb-0">
+                                <h5 class="m-0 me-2">Progression du ticket (SLA)</h5>
+                                <p class="card-subtitle">@Model.Ticket.Pourcentage pourcents</p>
+
+                            </div>
+
+                        </div>
+
+                        <div class="card-body">
+                            <div id="radialBarChart"></div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!--/ Projects table -->
+            </div>
+        </div>
+    </div>
+    <!-- Useful features: End -->
+
+
+
+<script>
+</script>

@@ -1,0 +1,181 @@
+@page
+@model Dn.ServiceRequest.Web.Pages.Tickets.Create
+@{
+    Layout = "Layouts/_HorizontalLayout";
+    ViewData["Title"] = "Ticket  - HR Service Request";
+}
+<div class="container py-5" >
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h3 class="card-title mb-4">Création de Ticket RH</h3>
+<h5>Détails du ticket</h5>
+         
+      <form>
+        <!-- Détails du ticket -->
+        <div class="mb-4 row">
+         <div class="row col-6">
+          
+         
+           <div class="mb-3 col-12">
+            <label for="ticket-object" class="form-label">Objet</label>
+            <input type="text" class="form-control" id="ticket-object" placeholder="Entrez l'objet de la demande">
+          </div>
+            <div class="mb-3 col-12">
+            <label for="ticket-description" class="form-label">Description</label>
+            <textarea class="form-control" id="ticket-description" rows="4" placeholder="Expliquez votre problème ici"></textarea>
+          </div></div>
+          <div class="row  col-6">
+            <div class="mb-3 col-12" >
+            <label for="ticket-type" class="form-label">Type de requête</label>
+            <select class="form-select" id="ticket-type">
+              <option selected disabled>Choisir un type de requête</option>
+              <option>Attestation de travail / de salaire / de fonction</option>
+              <option>Demande de fiche de paie ou duplicata</option>
+              <option>Mise à jour des données personnelles</option>
+              <option>Correction d’erreur sur bulletin de paie</option>
+              <option>Déclaration ou remplacement de badge</option>
+              <option>Suivi dossier CNSS / INSS / mutuelle / assurance</option>
+            </select>
+          </div>
+             <div class="col-md-6">
+              <label class="form-label">Validité (SLA)</label>
+              <input disabled type="text" class="form-control" value="1 heure">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Catégorie de ticket</label>
+              <input disabled type="text" class="form-control" value="Administration du personnel">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Groupe d'utilisateur</label>
+              <input disabled type="text" class="form-control" value="Equity-HRBP">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Recepteur</label>
+              <input disabled type="text" class="form-control" value="Cedrick@equitybcdc.cd">
+            </div>
+          </div>
+        
+         
+          
+        </div>
+
+
+     <div class="mb-4">
+  <h5 class="mb-3">Documents à joindre</h5>
+
+            <div class="upload-zone" id="uploadZone">
+              <p>Glissez-déposez vos fichiers ici ou cliquez pour sélectionner</p>
+              <input type="file" id="fileInput" multiple hidden />
+            </div>
+
+            <!-- Liste des fichiers -->
+            <ul id="fileList" class="file-list mt-3"></ul>
+          </div>
+
+      
+        <div class="d-grid">
+          <button type="submit" class="btn btn-success btn-lg">Soumettre le ticket</button>
+       <button type="button" disabled class="btn btn-success btn-lg d-flex align-items-center gap-2">
+    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+    Soumettre le ticket
+</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+                </div>
+        </div>
+    </div>
+    <!-- Useful features: End -->
+
+
+
+</div>
+<script>
+let base64Files = [];
+
+const uploadZone = document.getElementById("uploadZone");
+const fileInput = document.getElementById("fileInput");
+const fileList = document.getElementById("fileList");
+
+uploadZone.addEventListener("click", () => fileInput.click());
+
+fileInput.addEventListener("change", async (event) => {
+  await handleFiles(event.target.files);
+});
+
+uploadZone.addEventListener("dragover", (e) => {
+  e.preventDefault();
+  uploadZone.style.borderColor = "#0d6efd";
+});
+
+uploadZone.addEventListener("dragleave", () => {
+  uploadZone.style.borderColor = "#6c757d";
+});
+
+uploadZone.addEventListener("drop", async (e) => {
+  e.preventDefault();
+  uploadZone.style.borderColor = "#6c757d";
+  await handleFiles(e.dataTransfer.files);
+});
+
+async function handleFiles(files) {
+  for (let file of files) {
+    const base64 = await toBase64(file);
+
+    const fileObj = {
+      id: crypto.randomUUID(),  // ID unique pour supprimer
+      filename: file.name,
+      type: file.type,
+      size: file.size,
+      base64: base64
+    };
+
+    base64Files.push(fileObj);
+    displayFile(fileObj);
+  }
+
+  console.log("Tableau JSON des fichiers Base64 :", base64Files);
+}
+
+function displayFile(fileObj) {
+  const li = document.createElement("li");
+  li.setAttribute("data-id", fileObj.id);
+
+  li.innerHTML = `
+    <span>${fileObj.filename}</span>
+    <button class="btn btn-sm btn-danger remove-btn">Supprimer</button>
+  `;
+
+  // Action supprimer
+  li.querySelector(".remove-btn").addEventListener("click", () => {
+    removeFile(fileObj.id);
+  });
+
+  fileList.appendChild(li);
+}
+
+function removeFile(id) {
+  // Supprimer du tableau JSON
+  base64Files = base64Files.filter(f => f.id !== id);
+
+  // Supprimer du DOM
+  const li = fileList.querySelector(`[data-id="${id}"]`);
+  if (li) li.remove();
+
+  console.log("Après suppression :", base64Files);
+}
+
+function toBase64(file) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(",")[1]);
+    reader.readAsDataURL(file);
+  });
+}
+
+</script>

@@ -1,0 +1,43 @@
+body {}
+
+
+/* Getting-Started */
+
+.card-bg-image {
+    position: absolute;
+    width: 630px;
+    height: auto;
+    bottom: 0;
+    right: 0;
+    z-index: 1;
+}
+
+
+/* Getting-Started End */
+
+.scrolling-text-wrapper {
+    width: 100vw;
+    /* Largeur du conteneur */
+    overflow: hidden;
+    /* Masque le texte qui dépasse */
+    position: relative;
+}
+
+.scrolling-text {
+    display: inline-block;
+    white-space: nowrap;
+    /* Empêche le retour à la ligne */
+    animation: scrolling 20s linear infinite;
+    /* Animation continue */
+}
+
+@keyframes scrolling {
+    0% {
+        transform: translateX(100%);
+        /* Commence à droite */
+    }
+    100% {
+        transform: translateX(-100%);
+        /* Fin à gauche */
+    }
+}

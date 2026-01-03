@@ -1,0 +1,320 @@
+
+@page
+@model Dn.ServiceRequest.Web.Pages.IndexModel
+@using Volo.Abp.AspNetCore.Mvc.UI.Layout
+@using Volo.Abp.AspNetCore.Mvc.ViewFeatures
+@using Volo.Abp.AspNetCore.Mvc.UI
+@addTagHelper *, Volo.Abp.AspNetCore.Mvc.UI
+@{
+    Layout = "Layouts/_HorizontalLayout";
+    ViewData["Title"] = "Acceuil  - HR Service Request";
+    ViewData["LoadServiceProxyScript"] = true;
+}
+
+@section VendorStyles {
+    <link rel="stylesheet" href="~/vendor/libs/nouislider/nouislider.dist.css" />
+    <link rel="stylesheet" href="~/vendor/libs/swiper/swiper.dist.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/apex-charts/apex-charts.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/dropzone/dropzone.css" />
+    <link rel="stylesheet" href="~/css/app-chat.css" />
+ }
+
+@section PageStyles {
+    <link rel="stylesheet" href="~/vendor/css/pages/front-page-landing.dist.css" >
+    
+    <link rel="stylesheet" href="~/assets/vendor/libs/select2/select2.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/tagify/tagify.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/bootstrap-select/bootstrap-select.css" />
+}
+@section VendorScripts {
+    <script src="~/vendor/libs/nouislider/nouislider.dist.js"></script>
+    <script src="~/vendor/libs/swiper/swiper.dist.js"></script>    
+    <script src="~/assets/vendor/libs/apex-charts/apexcharts.js"></script>    
+    <script src="~/assets/vendor/libs/dropzone/dropzone.js"></script>
+    <script src="~/libs/abp/core/abp.js"></script>
+    <script src="~/libs/abp/jquery/abp.jquery.js"></script>
+  }
+
+@section PageScripts {
+   <!-- Vendors JS -->
+    <script src="~/assets/vendor/libs/select2/select2.js"></script>
+    <script src="~/assets/vendor/libs/tagify/tagify.js"></script>
+    <script src="~/assets/vendor/libs/bootstrap-select/bootstrap-select.js"></script>
+
+    <!--script src="~/js/front-page-landing.dist.js"></script-->
+    <script src="~/js/appChat.js"></script>
+    <!--abp-script src="/client-proxies/app-proxy.js"/-->
+    <script src="~/abp/ServiceProxyScript" defer></script>
+    <script src="~/js/app.js" defer></script>   
+}
+
+
+
+<style>
+.upload-zone {
+  border: 2px dashed #6c757d;
+  border-radius: 12px;
+  padding: 30px;
+  text-align: center;
+  cursor: pointer;
+  transition: .25s;
+  background: #f8f9fa;
+}
+
+.upload-zone:hover {
+  border-color: #0d6efd;
+  background: #eef5ff;
+}
+
+.file-list li {
+  list-style: none;
+  padding: 10px;
+  background: #f1f3f5;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+</style>
+@* ************** Content ************** *@
+<div data-bs-spy="scrol" class="scrollspy-exampe">
+  <!-- Hero: Start -->
+  <section id="hero-animation" style="width: 100vw;
+
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;margin-top:-50px;">
+    <div id="landingHer" class="section-py landing-hero position-relative" style="width:100vw;margin:0px;">
+      <img src="~/img/front-pages/backgrounds/sofi-bg_.jpg" alt="hero background"
+        style="width:100%; object-fit: cover;  height: 800px;"
+        class="position-absolute top-0 start-50 translate-middle-x object-fit-cover w-100 h-100" data-speed="1" />
+      <div class="container">
+        <div class="hero-text-box text-center position-relative">
+          <h1 class="text-white display-6 fw-extrabold">HR SERVICE REQUEST
+          </h1>
+          <nav aria-label="breadcrumb" class="text-center text-white">
+          </nav>
+       </div>
+      </div>
+    </div>
+    <marquee scrollamount="5" direction="left" behavior="scroll">
+      <h5 class="mt-2" style="z-index:99999999999999;">
+            Notre histoire
+            EquityBCDC est une filiale de Equity Group Holdings Plc (EGH), suite à l'acquisition de la majorité des parts de BCDC par EGH auprès de la famille de George Forrest en juillet 2020.
+
+            Elle opère en RDC depuis 1909.
+
+            Son objectif est de faciliter l'accès aux services bancaires à tous, financer les Micro, Petites, Moyennes et Grandes Entreprises congolaises, jusqu’à 350.000.000 de USD, localement.
+
+            Elle propose une gamme complète de services innovants et adaptés. Ses opérations sont régies par des principes-clés : préconiser la transparence dans la communication avec la clientèle et offrir des services qui sont basés sur une compréhension détaillée de la situation spécifique de chaque client et une analyse financière.
+
+            Cette approche responsable permet à EquityBCDC de construire une relation à long terme avec sa clientèle, basée sur une confiance mutuelle.
+
+            En facilitant les dépôts et d’autres services bancaires et en investissant des ressources substantielles dans l'éducation financière, nous visons à promouvoir la culture de l'épargne et un sens de responsabilité qui peuvent aider à apporter une plus grande stabilité et sécurité aux ménages ordinaires.
+
+            Nos procédures sont simples et efficaces. Elles assurent un service clientèle professionnel, rapide et de qualité. Nos actionnaires privilégient une rentabilité économique satisfaisante dans la durée, plutôt que la maximisation des bénéfices à court terme. Nous investissons énormément dans la formation de notre personnel pour créer un environnement de travail agréable et efficace, et fournir à nos clients un service professionnel et convivial.
+        </h5>
+       
+            
+    </marquee>
+
+<!--abp-card>
+    <abp-card-body>
+        <form asp-page-handler="GeneratePasswordlessToken" method="post">
+
+            <abp-button button-type="Dark" type="submit">Generate passwordless token link</abp-button>
+
+            @if (Model.PasswordlessLoginUrl != null)
+            {
+                <abp-card class="mt-3 p-3">
+                    <a href="@Model.PasswordlessLoginUrl">@Model.PasswordlessLoginUrl</a>
+                </abp-card>
+            }
+            
+        </form>
+    </abp-card-body>
+</abp-card-->
+  </section>
+  <!-- Hero: End -->
+  <div class="container-xxl flex-grow-1 container-p-y" style="margin-top:-50px;">
+        <div class="row g-6">
+            <div class="row g-6">
+                <!-- Default -->
+                <div class="row">
+                 
+
+<div class="container py-5" >
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h3 class="card-title mb-4">Création de Ticket RH</h3>
+      <h5>Détails du ticket</h5>
+         
+      <form id="ticketForm">
+        <!-- Détails du ticket -->
+        <div class="mb-4 row">
+         <div class="row col-6">
+          
+         
+           <div class="mb-3 col-12">
+            <label for="ticket-object" class="form-label">Objet</label>
+            <input type="text" class="form-control" id="ticket-object" placeholder="Entrez l'objet de la demande">
+          </div>
+            <div class="mb-3 col-12">
+            <label for="ticket-description" class="form-label">Description</label>
+            <textarea class="form-control" id="ticket-description" rows="4" placeholder="Expliquez votre problème ici"></textarea>
+          </div></div>
+          <div class="row col-6"> 
+            
+                     
+  <div class="mb-3 col-12">
+    <label for="ticket-type" class="form-label">Type de requête</label>
+    <select id="ticket-type" class="select2 form-select" data-allow-clear="true" >
+    </select>
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Validité (SLA)</label>
+    <input disabled type="text" class="form-control" id="sla">
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Catégorie de ticket</label>
+    <input disabled type="text" class="form-control" id="categorie">
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Groupe d'utilisateur</label>
+    <input disabled type="text" class="form-control" id="groupe">
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label">Recepteur</label>
+    <input disabled type="text" class="form-control" id="recepteur">
+  </div>
+</div>
+
+        
+         
+          
+        </div>
+
+
+     <div class="mb-4">
+  <h5 class="mb-3">Documents à joindre</h5>
+
+            <div class="upload-zone" id="uploadZone">
+              <p>Glissez-déposez vos fichiers ici ou cliquez pour sélectionner</p>
+              <input type="file" id="fileInput" multiple hidden />
+            </div>
+
+            <!-- Liste des fichiers -->
+            <ul id="fileList" class="file-list mt-3"></ul>
+          </div>
+
+      
+        <div class="d-grid">
+        <button type="submit" id="btnSubmit" class="btn btn-success btn-lg">
+    <i class="fa fa-save" style="margin-right:10px;"></i> Soumettre le ticket
+</button>
+
+<button type="button" id="btnLoading" disabled class="btn btn-success btn-lg d-none align-items-center gap-2">
+    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+    Soumettre le ticket
+</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+                </div>
+        </div>
+    </div>
+    <!-- Useful features: End -->
+
+
+
+</div>
+<!-- Modal -->
+<div class="modal fade" id="ticketModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow-lg rounded-4">
+
+      <div class="modal-header bg-success text-white rounded-top-4">
+        <h5 class="modal-title text-white" style="margin-top: -10px;margin-bottom: 15px;">
+          <i class="bi bi-check-circle me-2"></i>Ticket enregistré
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <!-- Ticket Number -->
+        <div class="d-flex justify-content-between align-items-center bg-light rounded p-3 mb-3">
+          <strong id="ticketNumber">TCK-2025-00124</strong>
+          <button class="btn btn-sm btn-outline-primary" onclick="copyTicket()">
+            <i class="bi bi-clipboard"></i> Copier
+          </button>
+        </div>
+
+        <!-- Infos -->
+      <ul class="list-group list-group-flush">
+    <li class="list-group-item">
+        ⏱️ <strong>SLA / Validité :</strong> <span id="Ssla"></span>
+    </li>
+    <li class="list-group-item">
+        🏷️ <strong>Catégorie :</strong> <span id="Scategorie"></span>
+    </li>
+    <li class="list-group-item">
+        👥 <strong>Groupe utilisateur :</strong> <span id="Sgroupe"></span>
+    </li>
+    <li class="list-group-item">
+        📧 <strong>Récepteur :</strong> <span id="Srecepteur"></span>
+    </li>
+</ul>
+
+
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" data-bs-dismiss="modal">
+          Fermer
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Bouton -->
+<button class="chat-btn" onclick="toggleChat()">💬</button>
+
+<!-- Popup -->
+<div class="chat-popup" id="chatPopup">
+  <div class="chat-header">
+   <strong> Lex</strong>
+    <div>
+      <span style="cursor:pointer;margin-right:10px" onclick="toggleExpand()">⛶</span>
+      <span style="cursor:pointer" onclick="toggleChat()">✖</span>
+    </div>
+  </div>
+
+  <div class="chat-messages" id="messages">
+    <div class="message bot">Bonjour 👋 Comment puis-je t’aider ?</div>
+  </div>
+
+  <div class="chat-input">
+    <input type="text" id="input" placeholder="Écris un message..." onkeypress="if(event.key==='Enter') sendMessage()">
+    <button onclick="sendMessage()">➤</button>
+  </div>
+</div>
+
+<script>
+
+</script>
