@@ -225,7 +225,7 @@ $(function () {
         }));
 
       // console.log(result.items); // Pour vérifier
-      $('#ticket-type').select2();
+      $('#ticket-type').select2().trigger('change');
     })
     .catch(function (err) {
       console.error('Erreur lors de la récupération des types:', err);
