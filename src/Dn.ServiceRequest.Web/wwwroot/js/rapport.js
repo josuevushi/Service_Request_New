@@ -1,0 +1,3 @@
+
+
+ $('#select-kpi').select2();

@@ -10,6 +10,6 @@ namespace Dn.ServiceRequest.Comments
     {
        [Required]
        public string Text { get; set; }
-        public Guid TicketId { get; set; }
+        public string TicketId { get; set; }
     }
 }

@@ -67,19 +67,6 @@ namespace Dn.ServiceRequest.Tickets
             _repositoryGroupeUser = repositoryGroupeUser;
             _clock = clock;
         }
-        public async Task<Ticket> SetDemarrerTicket(string ticketId)
-        {
-            if (!Guid.TryParse(ticketId, out var ticketGuid))
-                throw new BusinessException("Id du ticket invalide");
-
-            var ticket = await Repository.FindAsync(ticketGuid);
-            if (ticket == null)
-                throw new BusinessException("Ticket introuvable");
-
-            ticket.Status = Status.WorkInProgress; // assuming 0 => Open, 1 => InProgress
-            await Repository.UpdateAsync(ticket, autoSave: true);
-            return ticket;
-        }
         public async Task<UnTicketsDto> GetUnTicketAsync(string ticketId)
         {
             // -------------------------------
@@ -152,98 +139,28 @@ namespace Dn.ServiceRequest.Tickets
                     ticket.Groupe = groupe?.Nom;
                 }
             }
-            // Pourcentage
-            ticket.Pourcentage = ticket.ClosureDate == null
-                ? 0
-                : PourcentageEntreDeuxDates(
-                    ticket.CreationTime,
-                    ticket.ClosureDate
-                );
+            //
+            DateTime? dateReference = new DateTime();
+
+            dateReference = _clock.Now;
+            if (ticket.Status == Status.Open.ToString() || ticket.Status == Status.WorkInProgress.ToString()) { dateReference = _clock.Now; }
+            else if (ticket.Status == Status.Pending.ToString()) { dateReference = monTicket.PendingDate; }
+            else if (ticket.Status == Status.Close.ToString())
+            {
+                dateReference = monTicket.ClosureDate;
+                if (monTicket.PendingDate != DateTime.MinValue)
+                {
+                    dateReference = monTicket.PendingDate;
+                }
+            }
+            ticket.Pourcentage = PourcentageEntreDeuxDates(
+                                ticket.CreationTime,
+                                ticket.EstimateDate,
+                                dateReference
+                            );
+
 
             return ticket;
-        }
-        public async Task<List<IdentityUser>> GetUserTicketAsync(string ticketId)
-        {
-            /*
-            // -------------------------------
-            // Validation
-            // -------------------------------
-            if (!Guid.TryParse(ticketId, out var ticketGuid))
-                throw new BusinessException("Id du ticket invalide");
-
-            if (!CurrentUser.Id.HasValue)
-                throw new AbpAuthorizationException();
-
-            // -------------------------------
-            // Récupération du ticket (entité)
-            // -------------------------------
-            var monTicket = await Repository.GetAsync(ticketGuid);
-            if (monTicket == null)
-                throw new BusinessException("Ticket introuvable");
-
-            // -------------------------------
-            // Query EF Core (DATABASE ONLY)
-            // -------------------------------
-            var ticket = await AsyncExecuter.FirstOrDefaultAsync(
-                from tck in await Repository.GetQueryableAsync()
-                join grpUser in await _repositoryGroupeUser.GetQueryableAsync()
-                    on tck.AssignedTo equals grpUser.User_id
-                join grp in await _repositoryGroupe.GetQueryableAsync()
-                    on grp. equals fam.Id
-                join usr in await _userRepository.GetQueryableAsync()
-                    on tck.CreatorId equals usr.Id
-                where tck.Id == ticketGuid
-                where usr.Id == CurrentUser.Id
-                select new UnTicketsDto
-                {
-                    Id = tck.Id,
-                    Type = tpe.Nom,
-                    Famille = fam.Nom,
-                    Numero = tck.Numero,
-                    Status = tck.Status.ToString(),
-                    Objet = tck.Object,
-                    Description = tck.Description,
-                    CreationTime = tck.CreationTime,
-                    ClosureDate = tck.ClosureDate,
-                    CreatedBy = usr.UserName
-                }
-            );
-
-            if (ticket == null)
-                return null;
-
-            // -------------------------------
-            // Logique métier (C# uniquement)
-            // -------------------------------
-
-          // Assigné à
-        if (monTicket.AssignedTo != Guid.Empty)
-        {
-            var assignTo = await _userRepository.FindAsync(monTicket.AssignedTo);
-            ticket.AssignTo = assignTo?.UserName;
-
-            if (assignTo != null)
-            {
-                var groupe = (
-                    from grp in await _repositoryGroupe.GetQueryableAsync()
-                    join grpUser in await _repositoryGroupeUser.GetQueryableAsync()
-                        on grp.Id equals grpUser.Groupe_id
-                    where grpUser.User_id == assignTo.Id
-                    select grp
-                ).FirstOrDefault();
-
-                ticket.Groupe = groupe?.Nom;
-            }
-        }
-            // Pourcentage
-            ticket.Pourcentage = ticket.ClosureDate == null
-                ? 0
-                : PourcentageEntreDeuxDates(
-                    ticket.CreationTime,
-                    ticket.ClosureDate
-                );
-        */
-            return null;
         }
 
         public async Task<List<MesTicketsDto>> GetMesTickets()
@@ -286,7 +203,10 @@ namespace Dn.ServiceRequest.Tickets
                     Status.Close => x.ClosureDate,
                     _ => _clock.Now
                 };
-
+                if (x.PendingDate != DateTime.MinValue && x.Status == Status.Close)
+                {
+                    dateReference = x.PendingDate;
+                }
                 return new MesTicketsDto
                 {
                     Id = x.Id,
@@ -310,30 +230,27 @@ namespace Dn.ServiceRequest.Tickets
         // POURCENTAGE ENTRE DEUX DATES
         // -------------------------------
         public double PourcentageEntreDeuxDates(
-            DateTime dateDebut,
-            DateTime? dateFin,
-            DateTime? dateCourante = null)
+        DateTime dateDebut,
+        DateTime? dateFin,
+        DateTime? dateCourante = null)
         {
             var courante = dateCourante ?? _clock.Now;
             var fin = dateFin ?? courante;
 
-            if (courante <= dateDebut)
-                return 0.00;
-
             var total = (fin - dateDebut).TotalMilliseconds;
             if (total <= 0)
-                return 100.00;
+                return 0;
 
             var ecoule = (courante - dateDebut).TotalMilliseconds;
 
             var pourcentage = (ecoule / total) * 100;
 
+            // Autorise > 100% si courante > fin
             return Math.Round(
-                Math.Clamp(pourcentage, 0, 100),
-                2
+                Math.Max(pourcentage, 0), // bloque seulement les valeurs négatives
+                0
             );
         }
-
 
         // -------------------------------
         // LECTURE DES CONGÉS DEPUIS CONFIG
@@ -409,22 +326,23 @@ namespace Dn.ServiceRequest.Tickets
             };
             tck = await Repository.InsertAsync(tck, autoSave: true);
             //
-            if (data.Fichiers == null || data.Fichiers.Count == 0)
+            if (data.Fichiers != null)
             {
-                Console.WriteLine("La liste est vide ou nulle.");
-
-            }
-            else
-            {
-                foreach (string fichier in data.Fichiers)
+                foreach (var fichier in data.Fichiers.Where(f => !string.IsNullOrWhiteSpace(f)))
                 {
-                    Console.WriteLine(fichier);
-                    PieceJointe pj = new PieceJointe();
-                    pj.Ticket_id = tck.Id;
-                    pj.Nom = Path.GetFileName(fichier);
-                    pj.Path = fichier;
-                    await _pieceJointeRepository.InsertAsync(pj);
+                    var nom = Path.GetFileName(fichier);
 
+                    if (string.IsNullOrWhiteSpace(nom))
+                        continue;
+
+                    PieceJointe pj = new PieceJointe
+                    {
+                        Ticket_id = tck.Id,
+                        Nom = nom,
+                        Path = fichier
+                    };
+
+                    await _pieceJointeRepository.InsertAsync(pj);
                 }
             }
 

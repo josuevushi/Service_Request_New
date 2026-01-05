@@ -52,7 +52,7 @@ namespace Dn.ServiceRequest.Comments
           public async Task<Comment> GetAddCommentJoin(CommentAddDto monComment)
         {
            Comment com = new Comment();
-           com.Ticket_Id= monComment.TicketId;
+           com.Ticket_Id= Guid.Parse(monComment.TicketId);
            com.Text=monComment.Text;
             
             return await Repository.InsertAsync(com);

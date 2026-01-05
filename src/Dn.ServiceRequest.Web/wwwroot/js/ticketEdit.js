@@ -112,3 +112,52 @@ const data = {
 dn.serviceRequest.comments.comment.create(data).then(function(result){
     console.log(result);
 });*/
+
+$("#postComment").click(function() {
+    var $btn = $(this); // bouton
+    var commentText = $("#newComment").val().trim();
+
+    if(commentText === "") {
+        alert("Veuillez écrire un commentaire.");
+        return;
+    }
+
+    // Désactive le bouton et ajoute le spinner
+    $btn.prop("disabled", true);
+    var originalHtml = $btn.html(); // sauvegarde le HTML original
+    $btn.html('<i class="fa fa-spinner fa-spin" style="margin-right:5px"></i>Envoi...');
+
+    const data = {
+        text: commentText,
+        ticketId: $('#ticketId').val()
+    };
+
+    dn.serviceRequest.comments.comment.getAddCommentJoin(data).then(function(result){
+      console.log(result);
+        var now = new Date();
+        var hours = now.getHours().toString().padStart(2,'0');
+        var minutes = now.getMinutes().toString().padStart(2,'0');
+        var day = now.getDate().toString().padStart(2,'0');
+        var month = (now.getMonth() + 1).toString().padStart(2,'0');
+        var year = now.getFullYear();
+
+        var newComment = `
+            <div class="comment-card">
+                <div class="comment-header">
+                    <div class="user-info">
+                        Ton Nom
+                    </div>   <div class="date">${day}/${month}/${year} • ${hours}:${minutes}</div>
+                </div> <div class="comment-text">${commentText}</div>
+            </div>
+        `;
+
+        $("#commentsList").prepend(newComment);
+        $("#newComment").val("").focus();
+ // Rétablit le bouton et le HTML original
+        $btn.prop("disabled", false);
+        $btn.html(originalHtml);
+    }).catch(function(err){
+        console.error(err);
+        alert("Erreur lors de l'envoi du commentaire.");
+    });
+});
