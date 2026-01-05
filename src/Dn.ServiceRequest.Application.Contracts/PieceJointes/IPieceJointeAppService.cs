@@ -15,5 +15,6 @@ namespace Dn.ServiceRequest.PieceJointes
         CreateUpdatePieceJointeDto> 
     {
         Task<List<PieceJointeDto>> GetListByTicketId(Guid ticketId);
+        Task<PieceJointeDto> GetAddPieceJointe(string ticketId, string nom, string path);
     }
 }

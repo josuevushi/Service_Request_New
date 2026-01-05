@@ -151,8 +151,10 @@ async function handleFiles(files) {
 
     // 2. Préparer DTO pour FileUploadController
     const uploadData = {
-      fileName: file.name,
-      base64: base64Content
+      FileName: file.name,
+      Base64: base64Content,
+      Type: file.type,
+      Size: file.size
     };
 
     // 3. Upload physique via API
@@ -167,19 +169,18 @@ async function handleFiles(files) {
         data: JSON.stringify(uploadData)
       });
 
-      // 4. Si upload OK, créer l'entrée en base de données
-      const pieceJointeData = {
-        ticket_id: ticketId,
-        nom: file.name,
-        path: uploadResponse.filePath
-      };
-
-      const createdPj = await dn.serviceRequest.pieceJointes.pieceJointe.create(pieceJointeData);
-
-      // 5. Ajouter à la liste visuelle
-      renderFileItem(createdPj);
-
-      abp.notify.success(`Fichier '${file.name}' ajouté avec succès.`);
+      try {
+        const createdPj = await dn.serviceRequest.pieceJointes.pieceJointe.getAddPieceJointe(ticketId, file.name, uploadResponse.filePath);
+        // 5. Ajouter à la liste visuelle
+        renderFileItem(createdPj);
+        abp.notify.success(`Fichier '${file.name}' ajouté avec succès.`);
+      } catch (err) {
+        console.error("Erreur création PieceJointe:", err);
+        if (err.responseJSON && err.responseJSON.error && err.responseJSON.error.validationErrors) {
+          console.error("Détails validation:", err.responseJSON.error.validationErrors);
+        }
+        throw err; // Re-throw to be caught by the outer loop if needed
+      }
 
     } catch (err) {
       console.error(err);

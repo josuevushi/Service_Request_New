@@ -192,15 +192,23 @@
                         </button>
                     </form>
 
-                        <button id="SaveButton" type="button" class="btn btn-primary">
-                            <i class="ti ti-saves"></i> Enregistrer
+                   <form id="saveForm" method="post" action="/tickets/save/@Model.Id">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="assignedTo" id="hiddenAssignedTo" value="" />
+                        <button id="SaveButton" type="submit" class="btn btn-primary">
+                            <i class="ti ti-save"></i> Enregistrer
                         </button>
+                    </form>
                     }
                     else if (status == "WorkInProgress")
                     {
-                        <button id="SaveButton" type="button" class="btn btn-primary">
+                   <form id="saveForm" method="post" action="/tickets/save/@Model.Id">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="assignedTo" id="hiddenAssignedTo" value="" />
+                        <button id="SaveButton" type="submit" class="btn btn-primary">
                             <i class="ti ti-save"></i> Enregistrer
                         </button>
+                    </form>
 
                           <form method="get" action="/tickets/pending/@Model.Id">
                         <button type="submit" class="btn btn-primary">
@@ -218,9 +226,13 @@
                     }
                     else if (status == "Pending")
                     {
-                        <button id="SaveButton" type="button" class="btn btn-primary">
+                   <form id="saveForm" method="post" action="/tickets/save/@Model.Id">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="assignedTo" id="hiddenAssignedTo" value="" />
+                        <button id="SaveButton" type="submit" class="btn btn-primary">
                             <i class="ti ti-save"></i> Enregistrer
                         </button>
+                    </form>
 
                        <form method="get" action="/tickets/close/@Model.Id">
                         <button type="submit" class="btn btn-primary">

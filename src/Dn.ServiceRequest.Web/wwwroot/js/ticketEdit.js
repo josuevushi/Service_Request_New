@@ -45,30 +45,13 @@ $(function () {
 
     });
 
-    $('#SaveButton').click(function () {
-        var ticketId = $('#ticketId').val();
+    $('#saveForm').on('submit', function () {
         var userId = $('#ticket-AssignTo').val();
-
         if (!userId) {
             abp.notify.warn("Veuillez sélectionner un utilisateur.");
-            return;
+            return false;
         }
-
-        dn.serviceRequest.tickets.ticket.assignTicketToUser(ticketId, userId)
-            .then(function () {
-                // abp.notify.success("Ticket assigné avec succès.");
-                var alertHtml = `
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <strong>Success  !</strong> l'assignation de l'utilisateur a réussi
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            `;
-                $('#alert-container').html(alertHtml);
-            })
-            .catch(function (err) {
-                console.error(err);
-                abp.notify.error("Erreur lors de l'assignation du ticket.");
-            });
+        $('#hiddenAssignedTo').val(userId);
     });
 
     $('#PendingButton').click(function () {
@@ -113,11 +96,11 @@ dn.serviceRequest.comments.comment.create(data).then(function(result){
     console.log(result);
 });*/
 
-$("#postComment").click(function() {
+$("#postComment").click(function () {
     var $btn = $(this); // bouton
     var commentText = $("#newComment").val().trim();
 
-    if(commentText === "") {
+    if (commentText === "") {
         alert("Veuillez écrire un commentaire.");
         return;
     }
@@ -132,13 +115,13 @@ $("#postComment").click(function() {
         ticketId: $('#ticketId').val()
     };
 
-    dn.serviceRequest.comments.comment.getAddCommentJoin(data).then(function(result){
-      console.log(result);
+    dn.serviceRequest.comments.comment.getAddCommentJoin(data).then(function (result) {
+        console.log(result);
         var now = new Date();
-        var hours = now.getHours().toString().padStart(2,'0');
-        var minutes = now.getMinutes().toString().padStart(2,'0');
-        var day = now.getDate().toString().padStart(2,'0');
-        var month = (now.getMonth() + 1).toString().padStart(2,'0');
+        var hours = now.getHours().toString().padStart(2, '0');
+        var minutes = now.getMinutes().toString().padStart(2, '0');
+        var day = now.getDate().toString().padStart(2, '0');
+        var month = (now.getMonth() + 1).toString().padStart(2, '0');
         var year = now.getFullYear();
 
         var newComment = `
@@ -153,10 +136,10 @@ $("#postComment").click(function() {
 
         $("#commentsList").prepend(newComment);
         $("#newComment").val("").focus();
- // Rétablit le bouton et le HTML original
+        // Rétablit le bouton et le HTML original
         $btn.prop("disabled", false);
         $btn.html(originalHtml);
-    }).catch(function(err){
+    }).catch(function (err) {
         console.error(err);
         alert("Erreur lors de l'envoi du commentaire.");
     });

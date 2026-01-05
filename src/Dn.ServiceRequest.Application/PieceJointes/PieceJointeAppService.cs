@@ -60,6 +60,20 @@ namespace Dn.ServiceRequest.PieceJointes
             var items = await AsyncExecuter.ToListAsync(queryable.Where(p => p.Ticket_id == ticketId));
             return ObjectMapper.Map<List<PieceJointe>, List<PieceJointeDto>>(items);
         }
+
+        public async Task<PieceJointeDto> GetAddPieceJointe(string ticketId, string nom, string path)
+        {
+            var pieceJointe = new PieceJointe
+            {
+                Ticket_id = Guid.Parse(ticketId),
+                Nom = nom,
+                Path = path
+            };
+
+            await Repository.InsertAsync(pieceJointe);
+
+            return ObjectMapper.Map<PieceJointe, PieceJointeDto>(pieceJointe);
+        }
     }
 }
 
