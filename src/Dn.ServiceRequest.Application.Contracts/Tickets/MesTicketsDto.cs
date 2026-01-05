@@ -16,6 +16,8 @@ namespace Dn.ServiceRequest.Tickets
     public string Status { get; set; }
     public string Objet { get; set; }
     public string User { get; set; }
+    public string Groupe { get; set; }
+
 
     public DateTime CreationDate { get; set; }
     public DateTime ClosureDate { get; set; }

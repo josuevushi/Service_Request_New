@@ -17,5 +17,7 @@ namespace Dn.ServiceRequest.Tickets
     {
         Task<List<IdentityUserDto>> GetUsersInGroups();
         Task AssignTicketToUser(Guid ticketId, Guid userId);
+        Task<List<MesTicketsDto>> GetTicketsAssignes();
+        Task<List<MesTicketsDto>> GetTicketsGroupe();
     }
 }

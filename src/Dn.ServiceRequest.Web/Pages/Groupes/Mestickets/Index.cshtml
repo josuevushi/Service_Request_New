@@ -2,7 +2,7 @@
 @model Dn.ServiceRequest.Web.Pages.Groupes.Mestickets.Index
 @{
     Layout = "Layouts/_HorizontalLayout";
-    ViewData["Title"] = "Mes tickets - HR Service Request";
+    ViewData["Title"] = "Tickets qui me sont assignés - HR Service Request";
     ViewData["LoadServiceProxyScript"] = true;
 }
 
@@ -34,7 +34,7 @@
     <script src="~/js/appChat.js"></script>
     <!--abp-script src="/client-proxies/app-proxy.js"/-->
       <script src="~/Abp/ServiceProxyScript"></script>
-   <!--script src="~/js/app-mestickets.js"></script-->
+   <script src="~/js/app-assigned-tickets.js"></script>
 
    
 }
@@ -49,7 +49,7 @@
            
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <h3 class="card-title mb-4">Mes tickets</h3>
+                    <h3 class="card-title mb-4">Tickets qui me sont assignés</h3>
 
 
                     <div class="card-datatable table-responsive text-nowrap p-3 ">
@@ -64,7 +64,8 @@
                                      <td>Objet</td>
                                     <td>Status</td>
                                     <td>Progression</td>
-                                    <td>Categorie</td>
+                                    <td>Catégorie</td>
+                                    <td>Groupe</td>
                                     <td>Date de création</td>
                                     <td>Date d'estimation de clôture</td>
                                 </tr>
