@@ -7,8 +7,12 @@
     using Microsoft.AspNetCore.Mvc.RazorPages;
     using Microsoft.Extensions.Logging;
 using Volo.Abp.Timing;
+    using Dn.ServiceRequest.Permissions;
+    using Microsoft.AspNetCore.Authorization;
+
     namespace Dn.ServiceRequest.Web.Pages.Tickets
     {
+        [Authorize(ServiceRequestPermissions.Tickets.Start)]
         public class Start : PageModel
         {
             private readonly ILogger<Index> _logger;

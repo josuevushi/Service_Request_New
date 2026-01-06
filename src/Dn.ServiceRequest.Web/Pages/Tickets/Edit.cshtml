@@ -186,59 +186,80 @@
 
                     @if (status == "Open")
                     {
-                   <form method="get" action="/tickets/start/@Model.Id">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="ti ti-player-play"></i> Démarrer le travail
-                        </button>
-                    </form>
+                    @if (await AuthorizationService.IsGrantedAsync(Dn.ServiceRequest.Permissions.ServiceRequestPermissions.Tickets.Start))
+                    {
+                        <form method="get" action="/tickets/start/@Model.Id">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="ti ti-player-play"></i> Démarrer le travail
+                            </button>
+                        </form>
+                    }
 
-                   <form id="saveForm" method="post" action="/tickets/save/@Model.Id">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="assignedTo" id="hiddenAssignedTo" value="" />
-                        <button id="SaveButton" type="submit" class="btn btn-primary">
-                            <i class="ti ti-save"></i> Enregistrer
-                        </button>
-                    </form>
+                    @if (await AuthorizationService.IsGrantedAsync(Dn.ServiceRequest.Permissions.ServiceRequestPermissions.Tickets.Transfert))
+                    {
+                        <form id="saveForm" method="post" action="/tickets/save/@Model.Id">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="assignedTo" id="hiddenAssignedTo" value="" />
+                            <button id="SaveButton" type="submit" class="btn btn-primary">
+                                <i class="ti ti-save"></i> Enregistrer
+                            </button>
+                        </form>
+                    }
                     }
                     else if (status == "WorkInProgress")
                     {
-                   <form id="saveForm" method="post" action="/tickets/save/@Model.Id">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="assignedTo" id="hiddenAssignedTo" value="" />
-                        <button id="SaveButton" type="submit" class="btn btn-primary">
-                            <i class="ti ti-save"></i> Enregistrer
-                        </button>
-                    </form>
+                    @if (await AuthorizationService.IsGrantedAsync(Dn.ServiceRequest.Permissions.ServiceRequestPermissions.Tickets.Transfert))
+                    {
+                        <form id="saveForm" method="post" action="/tickets/save/@Model.Id">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="assignedTo" id="hiddenAssignedTo" value="" />
+                            <button id="SaveButton" type="submit" class="btn btn-primary">
+                                <i class="ti ti-save"></i> Enregistrer
+                            </button>
+                        </form>
+                    }
 
-                          <form method="get" action="/tickets/pending/@Model.Id">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="ti ti-device-ipad-horizontal-pause"></i> Suspendre
-                        </button>
-                    </form>
+                    @if (await AuthorizationService.IsGrantedAsync(Dn.ServiceRequest.Permissions.ServiceRequestPermissions.Tickets.Pending))
+                    {
+                        <form method="get" action="/tickets/pending/@Model.Id">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="ti ti-device-ipad-horizontal-pause"></i> Suspendre
+                            </button>
+                        </form>
+                    }
                     
-                          <form method="get" action="/tickets/close/@Model.Id">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="ti ti-x"></i> Clôturer
-                        </button>
-                    </form>
+                    @if (await AuthorizationService.IsGrantedAsync(Dn.ServiceRequest.Permissions.ServiceRequestPermissions.Tickets.Close))
+                    {
+                        <form method="get" action="/tickets/close/@Model.Id">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="ti ti-x"></i> Clôturer
+                            </button>
+                        </form>
+                    }
 
                        
                     }
                     else if (status == "Pending")
                     {
-                   <form id="saveForm" method="post" action="/tickets/save/@Model.Id">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="assignedTo" id="hiddenAssignedTo" value="" />
-                        <button id="SaveButton" type="submit" class="btn btn-primary">
-                            <i class="ti ti-save"></i> Enregistrer
-                        </button>
-                    </form>
+                    @if (await AuthorizationService.IsGrantedAsync(Dn.ServiceRequest.Permissions.ServiceRequestPermissions.Tickets.Transfert))
+                    {
+                        <form id="saveForm" method="post" action="/tickets/save/@Model.Id">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="assignedTo" id="hiddenAssignedTo" value="" />
+                            <button id="SaveButton" type="submit" class="btn btn-primary">
+                                <i class="ti ti-save"></i> Enregistrer
+                            </button>
+                        </form>
+                    }
 
-                       <form method="get" action="/tickets/close/@Model.Id">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="ti ti-x"></i> Clôturer
-                        </button>
-                    </form>
+                    @if (await AuthorizationService.IsGrantedAsync(Dn.ServiceRequest.Permissions.ServiceRequestPermissions.Tickets.Close))
+                    {
+                        <form method="get" action="/tickets/close/@Model.Id">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="ti ti-x"></i> Clôturer
+                            </button>
+                        </form>
+                    }
                     }
                     @* Close → rien à afficher *@
 

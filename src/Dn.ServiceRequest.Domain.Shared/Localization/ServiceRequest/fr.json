@@ -4,6 +4,13 @@
   "AppName": "ServiceRequest",
   "Menu:Home": "Accueil",
   "Welcome": "Bienvenue",
-  "LongWelcomeMessage": "Bienvenue dans l'application. Il s'agit d'un projet de démarrage basé sur le framework ABP. Pour plus d'informations, visitez abp.io."
+  "LongWelcomeMessage": "Bienvenue dans l'application. Il s'agit d'un projet de démarrage basé sur le framework ABP. Pour plus d'informations, visitez abp.io.",
+  "Permission:ServiceRequest": "Service Request",
+  "Permission:Tickets": "Gestion des Tickets",
+  "Permission:TraiterTicket": "Traiter ticket",
+  "Permission:Start": "Démarrer",
+  "Permission:Pending": "Suspendre",
+  "Permission:Close": "Clôturer",
+  "Permission:Transfert": "Transférer"
  }
 }

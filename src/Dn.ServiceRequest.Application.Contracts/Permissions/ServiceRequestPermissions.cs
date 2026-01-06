@@ -4,6 +4,13 @@ public static class ServiceRequestPermissions
 {
     public const string GroupName = "ServiceRequest";
 
-    //Add your own permission names. Example:
-    //public const string MyPermission1 = GroupName + ".MyPermission1";
+    public static class Tickets
+    {
+        public const string Default = GroupName + ".Tickets";
+        public const string Traiter = Default + ".Traiter";
+        public const string Start = Traiter + ".Start";
+        public const string Pending = Traiter + ".Pending";
+        public const string Close = Traiter + ".Close";
+        public const string Transfert = Traiter + ".Transfert";
+    }
 }

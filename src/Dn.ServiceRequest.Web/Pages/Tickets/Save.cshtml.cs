@@ -5,9 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 
+using Dn.ServiceRequest.Permissions;
+using Microsoft.AspNetCore.Authorization;
+
 namespace Dn.ServiceRequest.Web.Pages.Tickets
 {
     [IgnoreAntiforgeryToken]
+    [Authorize(ServiceRequestPermissions.Tickets.Transfert)]
     public class Save : PageModel
     {
         private readonly ILogger<Save> _logger;

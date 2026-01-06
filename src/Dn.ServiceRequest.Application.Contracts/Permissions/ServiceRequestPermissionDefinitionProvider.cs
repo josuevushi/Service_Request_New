@@ -8,9 +8,15 @@ public class ServiceRequestPermissionDefinitionProvider : PermissionDefinitionPr
 {
     public override void Define(IPermissionDefinitionContext context)
     {
-        var myGroup = context.AddGroup(ServiceRequestPermissions.GroupName);
-        //Define your own permissions here. Example:
-        //myGroup.AddPermission(ServiceRequestPermissions.MyPermission1, L("Permission:MyPermission1"));
+        var myGroup = context.AddGroup(ServiceRequestPermissions.GroupName, L("Permission:ServiceRequest"));
+
+        var ticketsPermission = myGroup.AddPermission(ServiceRequestPermissions.Tickets.Default, L("Permission:Tickets"));
+        
+        var traiterPermission = ticketsPermission.AddChild(ServiceRequestPermissions.Tickets.Traiter, L("Permission:TraiterTicket"));
+        traiterPermission.AddChild(ServiceRequestPermissions.Tickets.Start, L("Permission:Start"));
+        traiterPermission.AddChild(ServiceRequestPermissions.Tickets.Pending, L("Permission:Pending"));
+        traiterPermission.AddChild(ServiceRequestPermissions.Tickets.Close, L("Permission:Close"));
+        traiterPermission.AddChild(ServiceRequestPermissions.Tickets.Transfert, L("Permission:Transfert"));
     }
 
     private static LocalizableString L(string name)
