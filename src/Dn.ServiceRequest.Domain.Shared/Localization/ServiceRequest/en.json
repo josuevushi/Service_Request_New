@@ -4,6 +4,21 @@
     "AppName": "ServiceRequest",
     "Menu:Home": "Home",
     "Welcome": "Welcome",
-    "LongWelcomeMessage": "Welcome to the application. This is a startup project based on the ABP framework. For more information, visit abp.io."
+    "LongWelcomeMessage": "Welcome to the application. This is a startup project based on the ABP framework. For more information, visit abp.io.",
+    "Permission:ServiceRequest": "Service Request",
+    "Permission:Tickets": "Ticket Management",
+    "Permission:TraiterTicket": "Process ticket",
+    "Permission:Start": "Start",
+    "Permission:Pending": "Pending",
+    "Permission:Close": "Close",
+    "Permission:Transfert": "Transfer",
+    "Permission:Create": "Create",
+    "Permission:Update": "Update",
+    "Permission:Delete": "Delete",
+    "Permission:Familles": "Families Management",
+    "Permission:Types": "Request Types Management",
+    "Permission:Groupes": "Groups Management",
+    "Permission:GroupeUsers": "Group Users Management",
+    "Permission:GroupeTypes": "Group Types Management"
   }
 }

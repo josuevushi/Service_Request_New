@@ -1,16 +1,24 @@
 {
- "culture": "fr",
- "texts": {
-  "AppName": "ServiceRequest",
-  "Menu:Home": "Accueil",
-  "Welcome": "Bienvenue",
-  "LongWelcomeMessage": "Bienvenue dans l'application. Il s'agit d'un projet de démarrage basé sur le framework ABP. Pour plus d'informations, visitez abp.io.",
-  "Permission:ServiceRequest": "Service Request",
-  "Permission:Tickets": "Gestion des Tickets",
-  "Permission:TraiterTicket": "Traiter ticket",
-  "Permission:Start": "Démarrer",
-  "Permission:Pending": "Suspendre",
-  "Permission:Close": "Clôturer",
-  "Permission:Transfert": "Transférer"
- }
+    "culture": "fr",
+    "texts": {
+        "AppName": "ServiceRequest",
+        "Menu:Home": "Accueil",
+        "Welcome": "Bienvenue",
+        "LongWelcomeMessage": "Bienvenue dans l'application. Il s'agit d'un projet de démarrage basé sur le framework ABP. Pour plus d'informations, visitez abp.io.",
+        "Permission:ServiceRequest": "Service Request",
+        "Permission:Tickets": "Gestion des Tickets",
+        "Permission:TraiterTicket": "Traiter ticket",
+        "Permission:Start": "Démarrer",
+        "Permission:Pending": "Suspendre",
+        "Permission:Close": "Clôturer",
+        "Permission:Transfert": "Transférer",
+        "Permission:Create": "Créer",
+        "Permission:Update": "Modifier",
+        "Permission:Delete": "Supprimer",
+        "Permission:Familles": "Gestion des Familles",
+        "Permission:Types": "Gestion des Types de Demande",
+        "Permission:Groupes": "Gestion des Groupes",
+        "Permission:GroupeUsers": "Gestion des Utilisateurs par Groupe",
+        "Permission:GroupeTypes": "Gestion des Types par Groupe"
+    }
 }

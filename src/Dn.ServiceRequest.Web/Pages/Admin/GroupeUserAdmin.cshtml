@@ -1,0 +1,162 @@
+@page
+@model Dn.ServiceRequest.Web.Pages.Admin.GroupeUserAdminModel
+@{
+    Layout = "Layouts/_HorizontalLayout";
+    ViewData["Title"] = "Gestion des Utilisateurs par Groupe";
+}
+
+@section VendorStyles {
+    <link rel="stylesheet" href="~/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/select2/select2.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/formvalidation/dist/css/formValidation.min.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/sweetalert2/sweetalert2.css" />
+}
+
+@section VendorScripts {
+    <script src="~/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
+    <script src="~/assets/vendor/libs/select2/select2.js"></script>
+    <script src="~/assets/vendor/libs/formvalidation/dist/js/FormValidation.min.js"></script>
+    <script src="~/assets/vendor/libs/formvalidation/dist/js/plugins/Bootstrap5.min.js"></script>
+    <script src="~/assets/vendor/libs/formvalidation/dist/js/plugins/AutoFocus.min.js"></script>
+    <script src="~/assets/vendor/libs/sweetalert2/sweetalert2.js"></script>
+}
+
+@section PageScripts {
+    <script src="~/js/groupe-user-admin.js"></script>
+}
+
+<div class="row g-6">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header border-bottom d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">Liste des Associations Utilisateur-Groupe</h5>
+                <button class="btn btn-primary" data-bs-toggle="offcanvas" data-bs-target="#createGroupeUserOffcanvas">
+                    <i class="ti ti-plus me-1"></i> Associer un Utilisateur
+                </button>
+            </div>
+            <div class="card-datatable table-responsive">
+                <table id="groupeUserTable" class="table border-top">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Groupe</th>
+                            <th>Utilisateur</th>
+                            <th>Récepteur</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var gu in Model.GroupeUsers)
+                        {
+                            var groupeNom = Model.Groupes.FirstOrDefault(g => g.Value == gu.Groupe_id.ToString())?.Text ?? "Inconnu";
+                            var userEmail = Model.Users.FirstOrDefault(u => u.Value == gu.User_id.ToString())?.Text ?? "Inconnu";
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <span class="gu-groupe-@gu.Id" data-groupe-id="@gu.Groupe_id">@groupeNom</span>
+                                </td>
+                                <td>
+                                    <span class="gu-user-@gu.Id" data-user-id="@gu.User_id">@userEmail</span>
+                                </td>
+                                <td>
+                                    <span class="gu-receiver-@gu.Id" data-is-receiver="@gu.Is_Receiver.ToString().ToLower()">
+                                        @if (gu.Is_Receiver)
+                                        {
+                                            <span class="badge bg-label-success">Oui</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-label-secondary">Non</span>
+                                        }
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <a href="javascript:;" class="text-body edit-gu-button" data-id="@gu.Id" data-bs-toggle="offcanvas" data-bs-target="#editGroupeUserOffcanvas">
+                                            <i class="ti ti-edit ti-sm me-2"></i>
+                                        </a>
+                                        <form id="@gu.Id-deleteForm" asp-page-handler="Delete" asp-route-id="@gu.Id" method="post" style="display:none;"></form>
+                                        <a href="javascript:;" class="text-body" onclick="showDeleteConfirmation('@gu.Id', '@userEmail', '@groupeNom')">
+                                            <i class="ti ti-trash ti-sm"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Offcanvas to add -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="createGroupeUserOffcanvas" aria-labelledby="createGroupeUserOffcanvasLabel">
+    <div class="offcanvas-header border-bottom">
+        <h5 id="createGroupeUserOffcanvasLabel" class="offcanvas-title">Associer un Utilisateur</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body mx-0 flex-grow-0 p-6 h-100">
+        <form id="createGroupeUserForm" class="pt-0" asp-page-handler="Create" method="post">
+            <div class="mb-6">
+                <label class="form-label" asp-for="NewGroupeUser.Groupe_id">Groupe</label>
+                <select asp-for="NewGroupeUser.Groupe_id" asp-items="Model.Groupes" class="select2 form-select">
+                    <option value="">Sélectionner un groupe</option>
+                </select>
+            </div>
+            <div class="mb-6">
+                <label class="form-label" asp-for="NewGroupeUser.User_id">Utilisateur</label>
+                <select asp-for="NewGroupeUser.User_id" asp-items="Model.Users" class="select2 form-select">
+                    <option value="">Sélectionner un utilisateur</option>
+                </select>
+            </div>
+            <div class="mb-6">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" asp-for="NewGroupeUser.Is_Receiver" id="NewGroupeUser_IsReceiver" />
+                    <label class="form-check-label" for="NewGroupeUser_IsReceiver">
+                        Est-ce un récepteur ?
+                    </label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary me-sm-3 me-1 data-submit">Associer</button>
+            <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="offcanvas">Annuler</button>
+        </form>
+    </div>
+</div>
+
+<!-- Offcanvas to edit -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="editGroupeUserOffcanvas" aria-labelledby="editGroupeUserOffcanvasLabel">
+    <div class="offcanvas-header border-bottom">
+        <h5 id="editGroupeUserOffcanvasLabel" class="offcanvas-title">Modifier l'Association</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body mx-0 flex-grow-0 p-6 h-100">
+        <form id="editGroupeUserForm" class="pt-0" asp-page-handler="EditOrUpdate" method="post">
+            <input type="hidden" asp-for="EditGroupeUserId" id="EditGroupeUserId" />
+            <div class="mb-6">
+                <label class="form-label" asp-for="GroupeUser.Groupe_id">Groupe</label>
+                <select asp-for="GroupeUser.Groupe_id" asp-items="Model.Groupes" id="EditGU_GroupeId" class="select2 form-select">
+                    <option value="">Sélectionner un groupe</option>
+                </select>
+            </div>
+            <div class="mb-6">
+                <label class="form-label" asp-for="GroupeUser.User_id">Utilisateur</label>
+                <select asp-for="GroupeUser.User_id" asp-items="Model.Users" id="EditGU_UserId" class="select2 form-select">
+                    <option value="">Sélectionner un utilisateur</option>
+                </select>
+            </div>
+            <div class="mb-6">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" asp-for="GroupeUser.Is_Receiver" id="EditGU_IsReceiver" />
+                    <label class="form-check-label" for="EditGU_IsReceiver">
+                        Est-ce un récepteur ?
+                    </label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary me-sm-3 me-1 data-submit">Mettre à jour</button>
+            <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="offcanvas">Annuler</button>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,162 @@
+@page
+@model Dn.ServiceRequest.Web.Pages.Admin.TypeDemandeAdminModel
+@{
+    Layout = "Layouts/_HorizontalLayout";
+    ViewData["Title"] = "Gestion des Types de Demande";
+}
+
+@section VendorStyles {
+    <link rel="stylesheet" href="~/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/select2/select2.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/formvalidation/dist/css/formValidation.min.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/sweetalert2/sweetalert2.css" />
+}
+
+@section VendorScripts {
+    <script src="~/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
+    <script src="~/assets/vendor/libs/select2/select2.js"></script>
+    <script src="~/assets/vendor/libs/formvalidation/dist/js/FormValidation.min.js"></script>
+    <script src="~/assets/vendor/libs/formvalidation/dist/js/plugins/Bootstrap5.min.js"></script>
+    <script src="~/assets/vendor/libs/formvalidation/dist/js/plugins/AutoFocus.min.js"></script>
+    <script src="~/assets/vendor/libs/sweetalert2/sweetalert2.js"></script>
+}
+
+@section PageScripts {
+    <script src="~/js/type-demande-admin.js"></script>
+}
+
+<div class="row g-6">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header border-bottom d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">Liste des Types de Demande</h5>
+                <button class="btn btn-primary" data-bs-toggle="offcanvas" data-bs-target="#createTypeOffcanvas">
+                    <i class="ti ti-plus me-1"></i> Ajouter un Type
+                </button>
+            </div>
+            <div class="card-datatable table-responsive">
+                <table id="typeTable" class="table border-top">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Id</th>
+                            <th>Nom</th>
+                            <th>Famille</th>
+                            <th>SLA (Jours)</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var type in Model.Types)
+                        {
+                            var familleNom = Model.Familles.FirstOrDefault(f => f.Value == type.Famille_id.ToString())?.Text ?? "Inconnu";
+                            <tr>
+                                <td></td>
+                                <td>@type.Id.ToString().Substring(0, 8)...</td>
+                                <td>
+                                    <span class="type-nom-@type.Id">@type.Nom</span>
+                                </td>
+                                <td>
+                                    <span class="type-famille-@type.Id" data-famille-id="@type.Famille_id">@familleNom</span>
+                                </td>
+                                <td>
+                                    <span class="type-sla-@type.Id">@type.Sla</span>
+                                </td>
+                                <td style="display:none">
+                                    <span class="type-json-form-@type.Id">@type.Json_form</span>
+                                    <span class="type-json-step-@type.Id">@type.Json_step</span>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <a href="javascript:;" class="text-body edit-type-button" data-id="@type.Id" data-bs-toggle="offcanvas" data-bs-target="#editTypeOffcanvas">
+                                            <i class="ti ti-edit ti-sm me-2"></i>
+                                        </a>
+                                        <form id="@type.Id-deleteForm" asp-page-handler="Delete" asp-route-id="@type.Id" method="post" style="display:none;"></form>
+                                        <a href="javascript:;" class="text-body" onclick="showDeleteConfirmation('@type.Id', '@type.Nom')">
+                                            <i class="ti ti-trash ti-sm"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Offcanvas to add new type -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="createTypeOffcanvas" aria-labelledby="createTypeOffcanvasLabel">
+    <div class="offcanvas-header border-bottom">
+        <h5 id="createTypeOffcanvasLabel" class="offcanvas-title">Ajouter un Type</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body mx-0 flex-grow-0 p-6 h-100">
+        <form id="createTypeForm" class="pt-0" asp-page-handler="Create" method="post">
+            <div class="mb-6">
+                <label class="form-label" asp-for="NewType.Nom">Nom</label>
+                <input type="text" class="form-control" asp-for="NewType.Nom" placeholder="Demande de matériel" />
+            </div>
+            <div class="mb-6">
+                <label class="form-label" asp-for="NewType.Famille_id">Famille</label>
+                <select asp-for="NewType.Famille_id" asp-items="Model.Familles" class="select2 form-select">
+                    <option value="">Sélectionner une famille</option>
+                </select>
+            </div>
+            <div class="mb-6">
+                <label class="form-label" asp-for="NewType.Sla">SLA (Jours)</label>
+                <input type="number" class="form-control" asp-for="NewType.Sla" placeholder="5" />
+            </div>
+            <div class="mb-6">
+                <label class="form-label" asp-for="NewType.Json_form">JSON Form</label>
+                <textarea class="form-control" asp-for="NewType.Json_form" rows="3"></textarea>
+            </div>
+            <div class="mb-6">
+                <label class="form-label" asp-for="NewType.Json_step">JSON Step</label>
+                <textarea class="form-control" asp-for="NewType.Json_step" rows="3"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary me-sm-3 me-1 data-submit">Enregistrer</button>
+            <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="offcanvas">Annuler</button>
+        </form>
+    </div>
+</div>
+
+<!-- Offcanvas to edit type -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="editTypeOffcanvas" aria-labelledby="editTypeOffcanvasLabel">
+    <div class="offcanvas-header border-bottom">
+        <h5 id="editTypeOffcanvasLabel" class="offcanvas-title">Modifier le Type</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body mx-0 flex-grow-0 p-6 h-100">
+        <form id="editTypeForm" class="pt-0" asp-page-handler="EditOrUpdate" method="post">
+            <input type="hidden" asp-for="EditTypeId" id="EditTypeId" />
+            <div class="mb-6">
+                <label class="form-label" asp-for="Type.Nom">Nom</label>
+                <input type="text" class="form-control" asp-for="Type.Nom" id="EditType_Nom" placeholder="Demande de matériel" />
+            </div>
+            <div class="mb-6">
+                <label class="form-label" asp-for="Type.Famille_id">Famille</label>
+                <select asp-for="Type.Famille_id" asp-items="Model.Familles" id="EditType_FamilleId" class="select2 form-select">
+                    <option value="">Sélectionner une famille</option>
+                </select>
+            </div>
+            <div class="mb-6">
+                <label class="form-label" asp-for="Type.Sla">SLA (Jours)</label>
+                <input type="number" class="form-control" asp-for="Type.Sla" id="EditType_Sla" placeholder="5" />
+            </div>
+            <div class="mb-6">
+                <label class="form-label" asp-for="Type.Json_form">JSON Form</label>
+                <textarea class="form-control" asp-for="Type.Json_form" id="EditType_JsonForm" rows="3"></textarea>
+            </div>
+            <div class="mb-6">
+                <label class="form-label" asp-for="Type.Json_step">JSON Step</label>
+                <textarea class="form-control" asp-for="Type.Json_step" id="EditType_JsonStep" rows="3"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary me-sm-3 me-1 data-submit">Mettre à jour</button>
+            <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="offcanvas">Annuler</button>
+        </form>
+    </div>
+</div>

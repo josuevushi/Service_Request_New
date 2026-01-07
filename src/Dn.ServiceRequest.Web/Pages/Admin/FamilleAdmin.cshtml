@@ -1,0 +1,123 @@
+@page
+@model Dn.ServiceRequest.Web.Pages.Admin.FamilleAdminModel
+@{
+    Layout = "Layouts/_HorizontalLayout";
+    ViewData["Title"] = "Gestion des Familles";
+}
+
+@section VendorStyles {
+    <link rel="stylesheet" href="~/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/formvalidation/dist/css/formValidation.min.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/sweetalert2/sweetalert2.css" />
+}
+
+@section VendorScripts {
+    <script src="~/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
+    <script src="~/assets/vendor/libs/formvalidation/dist/js/FormValidation.min.js"></script>
+    <script src="~/assets/vendor/libs/formvalidation/dist/js/plugins/Bootstrap5.min.js"></script>
+    <script src="~/assets/vendor/libs/formvalidation/dist/js/plugins/AutoFocus.min.js"></script>
+    <script src="~/assets/vendor/libs/sweetalert2/sweetalert2.js"></script>
+}
+
+@section PageScripts {
+    <script src="~/js/famille-admin.js"></script>
+}
+
+<div class="row g-6">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header border-bottom d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">Liste des Familles</h5>
+                <button class="btn btn-primary" data-bs-toggle="offcanvas" data-bs-target="#createFamilleOffcanvas">
+                    <i class="ti ti-plus me-1"></i> Ajouter une Famille
+                </button>
+            </div>
+            <div class="card-datatable table-responsive">
+                <table id="familleTable" class="table border-top">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Id</th>
+                            <th>Nom</th>
+                            <th>Prefixe</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var famille in Model.Familles)
+                        {
+                            <tr>
+                                <td></td>
+                                <td>@famille.Id.ToString().Substring(0, 8)...</td>
+                                <td>
+                                    <span class="famille-nom-@famille.Id">@famille.Nom</span>
+                                </td>
+                                <td>
+                                    <span class="famille-prefixe-@famille.Id">@famille.Prefixe</span>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <a href="javascript:;" class="text-body edit-famille-button" data-id="@famille.Id" data-bs-toggle="offcanvas" data-bs-target="#editFamilleOffcanvas">
+                                            <i class="ti ti-edit ti-sm me-2"></i>
+                                        </a>
+                                        <form id="@famille.Id-deleteForm" asp-page-handler="Delete" asp-route-id="@famille.Id" method="post" style="display:none;"></form>
+                                        <a href="javascript:;" class="text-body" onclick="showDeleteConfirmation('@famille.Id', '@famille.Nom')">
+                                            <i class="ti ti-trash ti-sm"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Offcanvas to add new famille -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="createFamilleOffcanvas" aria-labelledby="createFamilleOffcanvasLabel">
+    <div class="offcanvas-header border-bottom">
+        <h5 id="createFamilleOffcanvasLabel" class="offcanvas-title">Ajouter une Famille</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body mx-0 flex-grow-0 p-6 h-100">
+        <form id="createFamilleForm" class="pt-0" asp-page-handler="Create" method="post">
+            <div class="mb-6">
+                <label class="form-label" asp-for="NewFamille.Nom">Nom</label>
+                <input type="text" class="form-control" asp-for="NewFamille.Nom" placeholder="Informatique" />
+            </div>
+            <div class="mb-6">
+                <label class="form-label" asp-for="NewFamille.Prefixe">Prefixe</label>
+                <input type="text" class="form-control" asp-for="NewFamille.Prefixe" placeholder="INF" />
+            </div>
+            <button type="submit" class="btn btn-primary me-sm-3 me-1 data-submit">Enregistrer</button>
+            <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="offcanvas">Annuler</button>
+        </form>
+    </div>
+</div>
+
+<!-- Offcanvas to edit famille -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="editFamilleOffcanvas" aria-labelledby="editFamilleOffcanvasLabel">
+    <div class="offcanvas-header border-bottom">
+        <h5 id="editFamilleOffcanvasLabel" class="offcanvas-title">Modifier la Famille</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body mx-0 flex-grow-0 p-6 h-100">
+        <form id="editFamilleForm" class="pt-0" asp-page-handler="EditOrUpdate" method="post">
+            <input type="hidden" asp-for="EditFamilleId" id="EditFamilleId" />
+            <div class="mb-6">
+                <label class="form-label" asp-for="Famille.Nom">Nom</label>
+                <input type="text" class="form-control" asp-for="Famille.Nom" id="EditFamille_Nom" placeholder="Informatique" />
+            </div>
+            <div class="mb-6">
+                <label class="form-label" asp-for="Famille.Prefixe">Prefixe</label>
+                <input type="text" class="form-control" asp-for="Famille.Prefixe" id="EditFamille_Prefixe" placeholder="INF" />
+            </div>
+            <button type="submit" class="btn btn-primary me-sm-3 me-1 data-submit">Mettre à jour</button>
+            <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="offcanvas">Annuler</button>
+        </form>
+    </div>
+</div>

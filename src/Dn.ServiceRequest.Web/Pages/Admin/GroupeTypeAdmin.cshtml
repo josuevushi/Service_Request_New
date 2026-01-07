@@ -1,0 +1,133 @@
+@page
+@model Dn.ServiceRequest.Web.Pages.Admin.GroupeTypeAdminModel
+@{
+    Layout = "Layouts/_HorizontalLayout";
+    ViewData["Title"] = "Gestion des Types par Groupe";
+}
+
+@section VendorStyles {
+    <link rel="stylesheet" href="~/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/select2/select2.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/formvalidation/dist/css/formValidation.min.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/sweetalert2/sweetalert2.css" />
+}
+
+@section VendorScripts {
+    <script src="~/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
+    <script src="~/assets/vendor/libs/select2/select2.js"></script>
+    <script src="~/assets/vendor/libs/formvalidation/dist/js/FormValidation.min.js"></script>
+    <script src="~/assets/vendor/libs/formvalidation/dist/js/plugins/Bootstrap5.min.js"></script>
+    <script src="~/assets/vendor/libs/formvalidation/dist/js/plugins/AutoFocus.min.js"></script>
+    <script src="~/assets/vendor/libs/sweetalert2/sweetalert2.js"></script>
+}
+
+@section PageScripts {
+    <script src="~/js/groupe-type-admin.js"></script>
+}
+
+<div class="row g-6">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header border-bottom d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">Liste des Associations Type-Groupe</h5>
+                <button class="btn btn-primary" data-bs-toggle="offcanvas" data-bs-target="#createGroupeTypeOffcanvas">
+                    <i class="ti ti-plus me-1"></i> Associer un Type
+                </button>
+            </div>
+            <div class="card-datatable table-responsive">
+                <table id="groupeTypeTable" class="table border-top">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Groupe</th>
+                            <th>Type de Demande</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var gt in Model.GroupeTypes)
+                        {
+                            var groupeNom = Model.Groupes.FirstOrDefault(g => g.Value == gt.Groupe_id.ToString())?.Text ?? "Inconnu";
+                            var typeNom = Model.Types.FirstOrDefault(t => t.Value == gt.Type_id.ToString())?.Text ?? "Inconnu";
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <span class="gt-groupe-@gt.Id" data-groupe-id="@gt.Groupe_id">@groupeNom</span>
+                                </td>
+                                <td>
+                                    <span class="gt-type-@gt.Id" data-type-id="@gt.Type_id">@typeNom</span>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <a href="javascript:;" class="text-body edit-gt-button" data-id="@gt.Id" data-bs-toggle="offcanvas" data-bs-target="#editGroupeTypeOffcanvas">
+                                            <i class="ti ti-edit ti-sm me-2"></i>
+                                        </a>
+                                        <form id="@gt.Id-deleteForm" asp-page-handler="Delete" asp-route-id="@gt.Id" method="post" style="display:none;"></form>
+                                        <a href="javascript:;" class="text-body" onclick="showDeleteConfirmation('@gt.Id', '@typeNom', '@groupeNom')">
+                                            <i class="ti ti-trash ti-sm"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Offcanvas to add -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="createGroupeTypeOffcanvas" aria-labelledby="createGroupeTypeOffcanvasLabel">
+    <div class="offcanvas-header border-bottom">
+        <h5 id="createGroupeTypeOffcanvasLabel" class="offcanvas-title">Associer un Type</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body mx-0 flex-grow-0 p-6 h-100">
+        <form id="createGroupeTypeForm" class="pt-0" asp-page-handler="Create" method="post">
+            <div class="mb-6">
+                <label class="form-label" asp-for="NewGroupeType.Groupe_id">Groupe</label>
+                <select asp-for="NewGroupeType.Groupe_id" asp-items="Model.Groupes" class="select2 form-select">
+                    <option value="">Sélectionner un groupe</option>
+                </select>
+            </div>
+            <div class="mb-6">
+                <label class="form-label" asp-for="NewGroupeType.Type_id">Type de Demande</label>
+                <select asp-for="NewGroupeType.Type_id" asp-items="Model.Types" class="select2 form-select">
+                    <option value="">Sélectionner un type</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary me-sm-3 me-1 data-submit">Associer</button>
+            <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="offcanvas">Annuler</button>
+        </form>
+    </div>
+</div>
+
+<!-- Offcanvas to edit -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="editGroupeTypeOffcanvas" aria-labelledby="editGroupeTypeOffcanvasLabel">
+    <div class="offcanvas-header border-bottom">
+        <h5 id="editGroupeTypeOffcanvasLabel" class="offcanvas-title">Modifier l'Association</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body mx-0 flex-grow-0 p-6 h-100">
+        <form id="editGroupeTypeForm" class="pt-0" asp-page-handler="EditOrUpdate" method="post">
+            <input type="hidden" asp-for="EditGroupeTypeId" id="EditGroupeTypeId" />
+            <div class="mb-6">
+                <label class="form-label" asp-for="GroupeType.Groupe_id">Groupe</label>
+                <select asp-for="GroupeType.Groupe_id" asp-items="Model.Groupes" id="EditGT_GroupeId" class="select2 form-select">
+                    <option value="">Sélectionner un groupe</option>
+                </select>
+            </div>
+            <div class="mb-6">
+                <label class="form-label" asp-for="GroupeType.Type_id">Type de Demande</label>
+                <select asp-for="GroupeType.Type_id" asp-items="Model.Types" id="EditGT_TypeId" class="select2 form-select">
+                    <option value="">Sélectionner un type</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary me-sm-3 me-1 data-submit">Mettre à jour</button>
+            <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="offcanvas">Annuler</button>
+        </form>
+    </div>
+</div>

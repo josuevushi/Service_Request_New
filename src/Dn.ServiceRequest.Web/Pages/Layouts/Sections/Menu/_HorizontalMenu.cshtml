@@ -23,7 +23,7 @@
 
 
           <!-- Apps -->
-          <li class='menu-item@((currentPage.StartsWith("/Apps/")|| currentPage.StartsWith("/CRUD/")) ? " active" : "")'>
+          <li class='menu-item@((currentPage.StartsWith("/Apps/")|| currentPage.StartsWith("/Admin/")) ? "  " : "")'>
               <a href="/mestickets/" class="menu-link">
                   <i class='menu-icon tf-icons ti ti-layout-grid-add'></i>
                   <div data-i18n="Mes Tickets">Mes tickets</div>
@@ -32,7 +32,7 @@
           </li>
         
           <!-- Pages -->
-          <!--li class='menu-item@((currentPage.StartsWith("/Pages/") || currentPage.StartsWith("/Wizards/") || currentPage.StartsWith("/Auth/") || currentPage.StartsWith("/Modals/")) ? " active" : "")'>
+          <!--li class='menu-item@((currentPage.StartsWith("/Pages/") || currentPage.StartsWith("/Wizards/") || currentPage.StartsWith("/Auth/") || currentPage.StartsWith("/Modals/")) ? "  " : "")'>
               <a href="javascript:void(0)" class="menu-link menu-toggle">
                   <i class="menu-icon tf-icons ti ti-external-link"></i>
 
@@ -40,7 +40,7 @@
               </a>
               <ul class="menu-sub">
                  
-                  <li class='menu-item@(currentPage == "/Pages/FAQ" ? " active" : "")'>
+                  <li class='menu-item@(currentPage == "/Pages/FAQ" ? "  " : "")'>
                       <a asp-page="/Pages/FAQ" class="menu-link">
                           <i class="menu-icon tf-icons ti ti-link"></i>
                           <div data-i18n="Core Banking">Core Banking</div>
@@ -48,63 +48,63 @@
                   </li>
 
 
-                  <li class='menu-item@(currentPage == "/Pages/Loans" ? " active" : "")'>
+                  <li class='menu-item@(currentPage == "/Pages/Loans" ? "  " : "")'>
                       <a asp-page="/Pages/Loans" class="menu-link">
                           <i class="menu-icon tf-icons ti ti-link"></i>
                           <div data-i18n="Loans Management">Loans Management</div>
                       </a>
                   </li>
 
-                  <li class='menu-item@(currentPage == "/Pages/ATM" ? " active" : "")'>
+                  <li class='menu-item@(currentPage == "/Pages/ATM" ? "  " : "")'>
                       <a asp-page="/Pages/ATM" class="menu-link">
                           <i class="menu-icon tf-icons ti ti-link"></i>
                           <div data-i18n="ATM Services">ATM Services</div>
                       </a>
                   </li>
 
-                  <li class='menu-item@(currentPage == "/Pages/CustomerService" ? " active" : "")'>
+                  <li class='menu-item@(currentPage == "/Pages/CustomerService" ? "  " : "")'>
                       <a asp-page="/Pages/CustomerService" class="menu-link">
                           <i class="menu-icon tf-icons ti ti-link"></i>
                           <div data-i18n="Customer Service">Customer Service</div>
                       </a>
                   </li>
 
-                  <li class='menu-item@(currentPage == "/Pages/OnlineBanking" ? " active" : "")'>
+                  <li class='menu-item@(currentPage == "/Pages/OnlineBanking" ? "  " : "")'>
                       <a asp-page="/Pages/OnlineBanking" class="menu-link">
                           <i class="menu-icon tf-icons ti ti-link"></i>
                           <div data-i18n="Online Banking">Online Banking</div>
                       </a>
                   </li>
 
-                  <li class='menu-item@(currentPage == "/Pages/Compliance" ? " active" : "")'>
+                  <li class='menu-item@(currentPage == "/Pages/Compliance" ? "  " : "")'>
                       <a asp-page="/Pages/Compliance" class="menu-link">
                           <i class="menu-icon tf-icons ti ti-link"></i>
                           <div data-i18n="Compliance">Compliance</div>
                       </a>
                   </li>
 
-                  <li class='menu-item@(currentPage == "/Pages/Investment" ? " active" : "")'>
+                  <li class='menu-item@(currentPage == "/Pages/Investment" ? "  " : "")'>
                       <a asp-page="/Pages/Investment" class="menu-link">
                           <i class="menu-icon tf-icons ti ti-link"></i>
                           <div data-i18n="Investment Portfolio">Investment Portfolio</div>
                       </a>
                   </li>
 
-                  <li class='menu-item@(currentPage == "/Pages/Payments" ? " active" : "")'>
+                  <li class='menu-item@(currentPage == "/Pages/Payments" ? "  " : "")'>
                       <a asp-page="/Pages/Payments" class="menu-link">
                           <i class="menu-icon tf-icons ti ti-link"></i>
                           <div data-i18n="Payments">Payments</div>
                       </a>
                   </li>
 
-                  <li class='menu-item@(currentPage == "/Pages/Savings" ? " active" : "")'>
+                  <li class='menu-item@(currentPage == "/Pages/Savings" ? "  " : "")'>
                       <a asp-page="/Pages/Savings" class="menu-link">
                           <i class="menu-icon tf-icons ti ti-link"></i>
                           <div data-i18n="Savings Accounts">Savings Accounts</div>
                       </a>
                   </li>
 
-                  <li class='menu-item@(currentPage == "/Pages/TransactionHistory" ? " active" : "")'>
+                  <li class='menu-item@(currentPage == "/Pages/TransactionHistory" ? "  " : "")'>
                       <a asp-page="/Pages/TransactionHistory" class="menu-link">
                           <i class="menu-icon tf-icons ti ti-link"></i>
                           <div data-i18n="Transaction History">Transaction History</div>
@@ -115,14 +115,14 @@
           </li-->
 
           <!-- Components -->
-          <li class='menu-item@((currentPage.StartsWith("/Cards/") || currentPage.StartsWith("/Ui/") || currentPage.StartsWith("/ExtendedUi/") || currentPage.StartsWith("/Icons/")) ? " active" : "")'>
+          <li class='menu-item@((currentPage.StartsWith("/Cards/") || currentPage.StartsWith("/Ui/") || currentPage.StartsWith("/ExtendedUi/") || currentPage.StartsWith("/Icons/")) ? "  " : "")'>
               <a href="javascript:void(0)" class="menu-link menu-toggle">
                   <i class="menu-icon tf-icons ti ti-ticket"></i>
                   <div data-i18n="Tickets à traiter">Tickets à traiter</div>
               </a>
               <ul class="menu-sub">
                   <!-- Cards -->
-                  <li class='menu-item@(currentPage.StartsWith("/Cards/") ? " active" : "")'>
+                  <li class='menu-item@(currentPage.StartsWith("/Cards/") ? "  " : "")'>
                       <a href="/groupes/mestickets/" class="menu-link">
                           <i class="menu-icon tf-icons ti ti-list"></i>
                           <div data-i18n="Mes tickets">Mes tickets</div>
@@ -131,7 +131,7 @@
                   </li>
                
                   <!-- Extended components -->
-                  <li class='menu-item@(currentPage.StartsWith("/ExtendedUi/") ? " active" : "")'>
+                  <li class='menu-item@(currentPage.StartsWith("/ExtendedUi/") ? "  " : "")'>
                       <a href="/groupes/" class="menu-link ">
                           <i class="menu-icon tf-icons ti ti-components"></i>
                           <div data-i18n="Tickets du Groupe">Tickets du Groupe</div>
@@ -143,7 +143,7 @@
           </li>
 
 
-        <!--li class='menu-item@((currentPage.StartsWith("/Pages/") || currentPage.StartsWith("/Wizards/") || currentPage.StartsWith("/Auth/") || currentPage.StartsWith("/Modals/")) ? " active" : "")'>
+        <!--li class='menu-item@((currentPage.StartsWith("/Pages/") || currentPage.StartsWith("/Wizards/") || currentPage.StartsWith("/Auth/") || currentPage.StartsWith("/Modals/")) ? "  " : "")'>
                 <a href="javascript:void(0)" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons ti ti-users-minus"></i>
 
@@ -152,7 +152,7 @@
                 <ul class="menu-sub">
                 
 
-                    <li class='menu-item@(currentPage == "/visits" ? " active" : "")'>
+                    <li class='menu-item@(currentPage == "/visits" ? "  " : "")'>
                         <a href="/visits" class="menu-link">
                             <i class="menu-icon tf-icons ti ti-rubber-stamp"></i>
                             <div data-i18n="Visteurs & mouvements">Visteurs & mouvements</div>
@@ -160,7 +160,7 @@
                     </li>
 
 
-                    <li class='menu-item@(currentPage == "/Pages/Loans" ? " active" : "")'>
+                    <li class='menu-item@(currentPage == "/Pages/Loans" ? "  " : "")'>
                         <a href="/staffs" class="menu-link">
                             <i class="menu-icon tf-icons ti ti-tag-starred"></i>
                             <div data-i18n="Staffs & Directions ">Staffs & Directions</div>
@@ -172,14 +172,14 @@
             </li-->
         
 
-             <!--li class='menu-item@((currentPage.StartsWith("/Pages/") || currentPage.StartsWith("/Wizards/") || currentPage.StartsWith("/Auth/") || currentPage.StartsWith("/Modals/")) ? " active" : "")'>
+             <!--li class='menu-item@((currentPage.StartsWith("/Pages/") || currentPage.StartsWith("/Wizards/") || currentPage.StartsWith("/Auth/") || currentPage.StartsWith("/Modals/")) ? "  " : "")'>
                 <a href="javascript:void(0)" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons ti ti-report"></i>
 
                     <div data-i18n="MT940">MT940</div>
                 </a>
                 <ul class="menu-sub">
-                                     <li class='menu-item@(currentPage == "/Pages/FAQ" ? " active" : "")'>
+                                     <li class='menu-item@(currentPage == "/Pages/FAQ" ? "  " : "")'>
                         <a asp-page="/apropos/conseil-d-administration" class="menu-link">
                             <i class="menu-icon tf-icons ti ti-users"></i>
                             <div data-i18n="Gestion des clients">Gestion des clients</div>
@@ -187,7 +187,7 @@
                     </li>
 
 
-                    <li class='menu-item@(currentPage == "/Pages/Loans" ? " active" : "")'>
+                    <li class='menu-item@(currentPage == "/Pages/Loans" ? "  " : "")'>
                         <a asp-page="/apropos/organigramme" class="menu-link">
                             <i class="menu-icon tf-icons ti ti-star"></i>
                             <div data-i18n="Gestion des tâches">Gestion des tâches</div>
@@ -197,26 +197,56 @@
 
                 </ul>
             </li-->
-            <li class='menu-item@(currentPage.StartsWith("/Dashboards/") ? " active" : "")'>
-                <a href="javascript:void(0)" class="menu-link">
+            <li class='menu-item@(currentPage.StartsWith("/Admin/UserAdmin") ? "  " : "")'>
+                <a href="/Admin/UserAdmin" class="menu-link">
                     <i class="menu-icon tf-icons ti ti-user-cog"></i>
-                    <div data-i18n="Gestion d'utilisateurs">Gestion d'utilisateurs'</div>
+                    <div data-i18n="Gestion d'utilisateurs">Gestion d'utilisateurs</div>
                 </a>
             </li>
-            <li class='menu-item@(currentPage.StartsWith("/Dashboards/") ? " active" : "")'>
-                <a href="javascript:void(0)" class="menu-link">
+            <li class='menu-item@(currentPage.StartsWith("/Admin/RoleAdmin") ? "  " : "")'>
+                <a href="/Admin/RoleAdmin" class="menu-link">
                     <i class="menu-icon tf-icons ti ti-sparkles"></i>
                     <div data-i18n="Roles & Scopes">Rôle & Scope</div>
                 </a>
             </li>
+            <li class='menu-item@(currentPage.StartsWith("/Admin/FamilleAdmin") ? "  " : "")'>
+                <a href="/Admin/FamilleAdmin" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-category"></i>
+                    <div data-i18n="Familles">Familles</div>
+                </a>
+            </li>
+            <li class='menu-item@(currentPage.StartsWith("/Admin/TypeDemandeAdmin") ? "  " : "")'>
+                <a href="/Admin/TypeDemandeAdmin" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-list-details"></i>
+                    <div data-i18n="Types de Demande">Types de Demande</div>
+                </a>
+            </li>
+            <li class='menu-item@(currentPage.StartsWith("/Admin/GroupeAdmin") ? "  " : "")'>
+                <a href="/Admin/GroupeAdmin" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-users-group"></i>
+                    <div data-i18n="Groupes">Groupes</div>
+                </a>
+            </li>
+            <li class='menu-item@(currentPage.StartsWith("/Admin/GroupeUserAdmin") ? "  " : "")'>
+                <a href="/Admin/GroupeUserAdmin" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-user-plus"></i>
+                    <div data-i18n="Utilisateurs par Groupe">Utilisateurs / Groupe</div>
+                </a>
+            </li>
+            <li class='menu-item@(currentPage.StartsWith("/Admin/GroupeTypeAdmin") ? "  " : "")'>
+                <a href="/Admin/GroupeTypeAdmin" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-list-check"></i>
+                    <div data-i18n="Types par Groupe">Types / Groupe</div>
+                </a>
+            </li>
    
-            <li class='menu-item@(currentPage.StartsWith("/Dashboards/") ? " active" : "")'>
+            <li class='menu-item@(currentPage.StartsWith("/Dashboards/") ? "  " : "")'>
                 <a href="/rapport/" class="menu-link">
                     <i class="menu-icon tf-icons ti ti-clipboard-text"></i>
                     <div data-i18n="Rapport ">Rapport</div>
                 </a>
             </li>
-           <li class='menu-item@(currentPage.StartsWith("/Dashboards/") ? " active" : "")'>
+           <li class='menu-item@(currentPage.StartsWith("/Dashboards/") ? "  " : "")'>
     <a href="/Account/logout" class="menu-link"
        >
         <i class="menu-icon tf-icons ti ti-lock"></i>

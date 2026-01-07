@@ -13,4 +13,44 @@ public static class ServiceRequestPermissions
         public const string Close = Traiter + ".Close";
         public const string Transfert = Traiter + ".Transfert";
     }
+
+    public static class Familles
+    {
+        public const string Default = GroupName + ".Familles";
+        public const string Create = Default + ".Create";
+        public const string Update = Default + ".Update";
+        public const string Delete = Default + ".Delete";
+    }
+
+    public static class Types
+    {
+        public const string Default = GroupName + ".Types";
+        public const string Create = Default + ".Create";
+        public const string Update = Default + ".Update";
+        public const string Delete = Default + ".Delete";
+    }
+
+    public static class Groupes
+    {
+        public const string Default = GroupName + ".Groupes";
+        public const string Create = Default + ".Create";
+        public const string Update = Default + ".Update";
+        public const string Delete = Default + ".Delete";
+    }
+
+    public static class GroupeUsers
+    {
+        public const string Default = GroupName + ".GroupeUsers";
+        public const string Create = Default + ".Create";
+        public const string Update = Default + ".Update";
+        public const string Delete = Default + ".Delete";
+    }
+
+    public static class GroupeTypes
+    {
+        public const string Default = GroupName + ".GroupeTypes";
+        public const string Create = Default + ".Create";
+        public const string Update = Default + ".Update";
+        public const string Delete = Default + ".Delete";
+    }
 }

@@ -1,0 +1,299 @@
+@page
+@model Dn.ServiceRequest.Web.Pages.Admin.RoleAdminModel
+@{
+    Layout = "Layouts/_HorizontalLayout";
+    ViewData["Title"] = "Gestion des Rôles";
+}
+
+@section VendorStyles {
+    <link rel="stylesheet" href="~/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/formvalidation/dist/css/formValidation.min.css" />
+}
+
+@section VendorScripts {
+    <script src="~/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
+    <script src="~/assets/vendor/libs/formvalidation/dist/js/FormValidation.min.js"></script>
+    <script src="~/assets/vendor/libs/formvalidation/dist/js/plugins/Bootstrap5.min.js"></script>
+    <script src="~/assets/vendor/libs/formvalidation/dist/js/plugins/AutoFocus.min.js"></script>
+    <script src="~/assets/vendor/libs/sweetalert2/sweetalert2.js"></script>
+    <script src="~/js/role-admin.js"></script>
+}
+
+@section PageScripts {
+    <script>
+      function showRoleDeleteConfirmation(roleId, roleName) {
+        Swal.fire({
+          title: 'Supprimer le rôle ?',
+          html: '<p class="text-danger">Êtes-vous sûr de vouloir supprimer le rôle : <br> <span class="fw-medium text-body">' + roleName + '</span></p>',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Supprimer',
+          cancelButtonText: 'Annuler',
+          customClass: {
+            confirmButton: 'btn btn-primary waves-effect waves-light',
+            cancelButton: 'btn btn-label-secondary waves-effect waves-light'
+          }
+        }).then(result => {
+          if (result.isConfirmed) {
+            document.getElementById(roleId + '-deleteForm').submit();
+          }
+        });
+      }
+
+      function editRole(id, name, isDefault, isPublic) {
+        document.getElementById('EditRoleId').value = id;
+        document.getElementById('EditRole_Name').value = name;
+        document.getElementById('EditRole_IsDefault').checked = isDefault;
+        document.getElementById('EditRole_IsPublic').checked = isPublic;
+        var offcanvas = new bootstrap.Offcanvas(document.getElementById('editRoleOffcanvas'));
+        offcanvas.show();
+      }
+
+      function managePermissions(roleName) {
+        document.getElementById('permissionModalRoleName').innerText = roleName;
+        document.getElementById('currentRoleName').value = roleName;
+        
+        // Fetch permissions via AJAX
+        fetch(`?handler=Permissions&providerName=R&providerKey=${roleName}`)
+          .then(response => response.json())
+          .then(data => {
+            const container = document.getElementById('permissionsContainer');
+            container.innerHTML = '';
+            
+            data.forEach(group => {
+              const groupDiv = document.createElement('div');
+              groupDiv.className = 'mb-4';
+              groupDiv.innerHTML = `<h6>${group.displayName}</h6>`;
+              
+              const table = document.createElement('table');
+              table.className = 'table table-sm table-borderless';
+              const tbody = document.createElement('tbody');
+              
+              group.permissions.forEach(permission => {
+                const tr = document.createElement('tr');
+                const padding = permission.parentName ? 'ps-4' : '';
+                tr.innerHTML = `
+                  <td class="${padding}">
+                    <div class="form-check">
+                      <input class="form-check-input permission-checkbox" type="checkbox" 
+                             id="perm_${permission.name}" 
+                             data-name="${permission.name}"
+                             ${permission.isGranted ? 'checked' : ''}>
+                      <label class="form-check-label" for="perm_${permission.name}">
+                        ${permission.displayName}
+                      </label>
+                    </div>
+                  </td>
+                `;
+                tbody.appendChild(tr);
+              });
+              
+              table.appendChild(tbody);
+              groupDiv.appendChild(table);
+              container.appendChild(groupDiv);
+            });
+            
+            var modal = new bootstrap.Modal(document.getElementById('permissionsModal'));
+            modal.show();
+          });
+      }
+
+      function savePermissions() {
+        const roleName = document.getElementById('currentRoleName').value;
+        const checkboxes = document.querySelectorAll('.permission-checkbox');
+        const permissions = Array.from(checkboxes).map(cb => ({
+          name: cb.getAttribute('data-name'),
+          isGranted: cb.checked
+        }));
+
+        const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+        fetch(`?handler=UpdatePermissions&providerName=R&providerKey=${roleName}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'RequestVerificationToken': token
+          },
+          body: JSON.stringify(permissions)
+        })
+        .then(response => response.json())
+        .then(result => {
+          if (result.success) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Succès',
+              text: 'Permissions mises à jour avec succès',
+              timer: 1500,
+              showConfirmButton: false
+            }).then(() => {
+              bootstrap.Modal.getInstance(document.getElementById('permissionsModal')).hide();
+            });
+          }
+        });
+      }
+    </script>
+}
+
+<div class="row g-6">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header border-bottom d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">Liste des Rôles</h5>
+                <button class="btn btn-primary" data-bs-toggle="offcanvas" data-bs-target="#createRoleOffcanvas">
+                    <i class="ti ti-plus me-1"></i> Ajouter un Rôle
+                </button>
+            </div>
+            <div class="card-datatable table-responsive">
+                <table id="roleTable" class="table border-top">
+                    <thead>
+                        <tr>
+                            <th>Nom du Rôle</th>
+                            <th>Défaut</th>
+                            <th>Public</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var role in Model.Roles)
+                        {
+                            <tr>
+                                <td>@role.Name</td>
+                                <td>
+                                    @if (role.IsDefault)
+                                    {
+                                        <span class="badge bg-label-success">Oui</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-label-secondary">Non</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (role.IsPublic)
+                                    {
+                                        <span class="badge bg-label-info">Oui</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-label-secondary">Non</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <a href="javascript:;" class="text-body" onclick="editRole('@role.Id', '@role.Name', @role.IsDefault.ToString().ToLower(), @role.IsPublic.ToString().ToLower())">
+                                            <i class="ti ti-edit ti-sm me-2"></i>
+                                        </a>
+                                        <a href="javascript:;" class="text-body" onclick="managePermissions('@role.Name')">
+                                            <i class="ti ti-lock ti-sm me-2"></i>
+                                        </a>
+                                        @if (!role.IsStatic)
+                                        {
+                                            <form id="@role.Id-deleteForm" asp-page-handler="Delete" asp-route-id="@role.Id" method="post" style="display:none;"></form>
+                                            <a href="javascript:;" class="text-body" onclick="showRoleDeleteConfirmation('@role.Id', '@role.Name')">
+                                                <i class="ti ti-trash ti-sm"></i>
+                                            </a>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Offcanvas to add new role -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="createRoleOffcanvas" aria-labelledby="createRoleOffcanvasLabel">
+    <div class="offcanvas-header border-bottom">
+        <h5 id="createRoleOffcanvasLabel" class="offcanvas-title">Ajouter un Rôle</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body mx-0 flex-grow-0 p-6 h-100">
+        <form id="createRoleForm" asp-page-handler="Create" method="post">
+            <div class="mb-6">
+                <label class="form-label" asp-for="NewRole.Name">Nom du Rôle</label>
+                <input type="text" class="form-control" asp-for="NewRole.Name" placeholder="Admin" />
+            </div>
+            <div class="mb-6">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" asp-for="NewRole.IsDefault" />
+                  <label class="form-check-label" asp-for="NewRole.IsDefault">
+                    Rôle par défaut
+                  </label>
+                </div>
+            </div>
+            <div class="mb-6">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" asp-for="NewRole.IsPublic" />
+                  <label class="form-check-label" asp-for="NewRole.IsPublic">
+                    Rôle public
+                  </label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary me-sm-3 me-1">Enregistrer</button>
+            <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="offcanvas">Annuler</button>
+        </form>
+    </div>
+</div>
+
+<!-- Offcanvas to edit role -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="editRoleOffcanvas" aria-labelledby="editRoleOffcanvasLabel">
+    <div class="offcanvas-header border-bottom">
+        <h5 id="editRoleOffcanvasLabel" class="offcanvas-title">Modifier le Rôle</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body mx-0 flex-grow-0 p-6 h-100">
+        <form id="editRoleForm" asp-page-handler="Update" method="post">
+            <input type="hidden" asp-for="EditRoleId" id="EditRoleId" />
+            <div class="mb-6">
+                <label class="form-label" asp-for="EditRole.Name">Nom du Rôle</label>
+                <input type="text" class="form-control" asp-for="EditRole.Name" id="EditRole_Name" placeholder="Admin" />
+            </div>
+            <div class="mb-6">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" asp-for="EditRole.IsDefault" id="EditRole_IsDefault" />
+                  <label class="form-check-label" asp-for="EditRole.IsDefault">
+                    Rôle par défaut
+                  </label>
+                </div>
+            </div>
+            <div class="mb-6">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" asp-for="EditRole.IsPublic" id="EditRole_IsPublic" />
+                  <label class="form-check-label" asp-for="EditRole.IsPublic">
+                    Rôle public
+                  </label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary me-sm-3 me-1">Mettre à jour</button>
+            <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="offcanvas">Annuler</button>
+        </form>
+    </div>
+</div>
+
+<!-- Modal for permissions -->
+<div class="modal fade" id="permissionsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title">Permissions : <span id="permissionModalRoleName"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="currentRoleName" />
+                <div id="permissionsContainer" style="max-height: 60vh; overflow-y: auto;">
+                    <!-- Permissions will be loaded here -->
+                </div>
+            </div>
+            <div class="modal-footer border-top">
+                <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">Annuler</button>
+                <button type="button" class="btn btn-primary" onclick="savePermissions()">Enregistrer les changements</button>
+            </div>
+        </div>
+    </div>
+</div>
+@Html.AntiForgeryToken()

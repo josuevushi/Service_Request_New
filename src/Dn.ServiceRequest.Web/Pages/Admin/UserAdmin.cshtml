@@ -1,0 +1,154 @@
+@page
+@model Dn.ServiceRequest.Web.Pages.Admin.UserAdminModel
+@{
+    Layout = "Layouts/_HorizontalLayout";
+    ViewData["Title"] = "Gestion des Utilisateurs";
+}
+
+@section VendorStyles {
+    <link rel="stylesheet" href="~/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/select2/select2.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/tagify/tagify.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/bootstrap-select/bootstrap-select.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/typeahead-js/typeahead.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/formvalidation/dist/css/formValidation.min.css" />
+}
+
+@section VendorScripts {
+    <script src="~/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
+    <script src="~/assets/vendor/libs/select2/select2.js"></script>
+    <script src="~/assets/vendor/libs/tagify/tagify.js"></script>
+    <script src="~/assets/vendor/libs/bootstrap-select/bootstrap-select.js"></script>
+    <script src="~/assets/vendor/libs/typeahead-js/typeahead.js"></script>
+    <script src="~/assets/vendor/libs/bloodhound/bloodhound.js"></script>
+    <script src="~/assets/vendor/libs/formvalidation/dist/js/FormValidation.min.js"></script>
+    <script src="~/assets/vendor/libs/formvalidation/dist/js/plugins/Bootstrap5.min.js"></script>
+    <script src="~/assets/vendor/libs/formvalidation/dist/js/plugins/AutoFocus.min.js"></script>
+    <script src="~/assets/vendor/libs/cleavejs/cleave.js"></script>
+    <script src="~/assets/vendor/libs/cleavejs/cleave-phone.js"></script>
+    <script src="~/assets/vendor/libs/sweetalert2/sweetalert2.js"></script>
+}
+
+@section PageScripts {
+    <script src="~/js/user-management.js"></script>
+}
+
+<div class="row g-6">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header border-bottom d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">Liste des Utilisateurs</h5>
+                <button class="btn btn-primary" data-bs-toggle="offcanvas" data-bs-target="#createUserOffcanvas">
+                    <i class="ti ti-plus me-1"></i> Ajouter un Utilisateur
+                </button>
+            </div>
+            <div class="card-datatable table-responsive">
+                <table id="userTable" class="table border-top">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Id</th>
+                            <th>Utilisateur</th>
+                            <th>Email</th>
+                            <th>Vérifié</th>
+                            <th>Rôle</th>
+                            <th>Plan</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model.Users)
+                        {
+                            <tr>
+                                <td></td>
+                                <td>@user.Id.ToString().Substring(0, 8)...</td>
+                                <td>
+                                    <div class="d-flex justify-content-start align-items-center user-name">
+                                        <div class="d-flex flex-column">
+                                            <span class="fw-medium user-name-full-@user.Id">@user.UserName</span>
+                                            <small class="text-muted">@user.Email</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>@user.Email</td>
+                                <td>
+                                    <span class="user-verified-@user.Id" data-is-verified="true">
+                                        <i class="ti ti-shield-check text-success ti-sm"></i>
+                                    </span>
+                                </td>
+                                <td>Admin</td> @* Placeholder, should fetch roles *@
+                                <td>Standard</td> @* Placeholder *@
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <a href="javascript:;" class="text-body edit-user-button" data-id="@user.Id" data-bs-toggle="offcanvas" data-bs-target="#editUserOffcanvas">
+                                            <i class="ti ti-edit ti-sm me-2"></i>
+                                        </a>
+                                        <form id="@user.Id-deleteForm" asp-page-handler="Delete" asp-route-id="@user.Id" method="post" style="display:none;"></form>
+                                        <a href="javascript:;" class="text-body" onclick="showDeleteConfirmation('@user.Id')">
+                                            <i class="ti ti-trash ti-sm"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Offcanvas to add new user -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="createUserOffcanvas" aria-labelledby="createUserOffcanvasLabel">
+    <div class="offcanvas-header border-bottom">
+        <h5 id="createUserOffcanvasLabel" class="offcanvas-title">Ajouter un Utilisateur</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body mx-0 flex-grow-0 p-6 h-100">
+        <form id="createUserForm" class="add-new-user pt-0" asp-page-handler="Create" method="post">
+            <div class="mb-6">
+                <label class="form-label" asp-for="NewUser.UserName">Nom d'utilisateur</label>
+                <input type="text" class="form-control" asp-for="NewUser.UserName" placeholder="johndoe" />
+            </div>
+            <div class="mb-6">
+                <label class="form-label" asp-for="NewUser.Email">Email</label>
+                <input type="email" class="form-control" asp-for="NewUser.Email" placeholder="john.doe@example.com" />
+            </div>
+            <button type="submit" class="btn btn-primary me-sm-3 me-1 data-submit">Enregistrer</button>
+            <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="offcanvas">Annuler</button>
+        </form>
+    </div>
+</div>
+
+<!-- Offcanvas to edit user -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="editUserOffcanvas" aria-labelledby="editUserOffcanvasLabel">
+    <div class="offcanvas-header border-bottom">
+        <h5 id="editUserOffcanvasLabel" class="offcanvas-title">Modifier l'Utilisateur</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body mx-0 flex-grow-0 p-6 h-100">
+        <form id="editUserForm" class="edit-user pt-0" asp-page-handler="EditOrUpdate" method="post">
+            <input type="hidden" asp-for="EditUserId" id="EditUserId" />
+            <div class="mb-6">
+                <label class="form-label" asp-for="user.UserName">Nom d'utilisateur</label>
+                <input type="text" class="form-control" asp-for="user.UserName" id="EditUser_UserName" placeholder="johndoe" />
+            </div>
+            <div class="mb-6">
+                <label class="form-label" asp-for="user.Email">Email</label>
+                <input type="email" class="form-control" asp-for="user.Email" id="EditUser_Email" placeholder="john.doe@example.com" />
+            </div>
+            <div class="mb-6">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="EditUser_IsVerified" />
+                  <label class="form-check-label" for="EditUser_IsVerified">
+                    Vérifié
+                  </label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary me-sm-3 me-1 data-submit">Mettre à jour</button>
+            <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="offcanvas">Annuler</button>
+        </form>
+    </div>
+</div>

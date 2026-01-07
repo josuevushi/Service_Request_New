@@ -1,5 +1,5 @@
 /**
- * User CRUD JS
+ * User Admin JS
  */
 
 'use strict';
@@ -59,7 +59,7 @@ function submitFormAndSetSuccessFlag(form, flagName) {
   function setFormAttributes(form, userId, handler) {
     const routeAttribute = 'asp-route-id';
     setElementAttributes(form, routeAttribute, userId);
-    form.action = `/CRUD/UserCRUD?handler=${handler}&id=${userId}`;
+    form.action = `/Admin/UserAdmin?handler=${handler}&id=${userId}`;
   }
 
   // Sweet Alert Success Function (User Deleted/Created/Updated)
@@ -89,46 +89,40 @@ function submitFormAndSetSuccessFlag(form, flagName) {
   // Function to handle the "Edit User" Offcanvas Modal
   const handleEditUserModal = editButton => {
     // Get the user details from the table
-    const userId = editButton.id.split('-')[0];
-    const userName = document.querySelector(`.user-name-full-${userId}`).innerText;
-    const userEmail = document.getElementById(`${userId}-editUser`).parentElement.parentElement.children[3].innerText;
-    const isVerified = document.querySelector(`.user-verified-${userId}`).dataset.isVerified;
-    const userContactNumber = document.getElementById(`${userId}-editUser`).parentElement.parentElement.children[5]
-      .innerText;
-    const userSelectedRole = document.getElementById(`${userId}-editUser`).parentElement.parentElement.children[6]
-      .innerText;
-    const userSelectedPlan = document.getElementById(`${userId}-editUser`).parentElement.parentElement.children[7]
-      .innerText;
+    const userId = editButton.getAttribute('data-id');
+    const row = editButton.closest('tr');
 
-    // Set the form attributes (route and action)
-    const editForm = document.getElementById('editUserForm');
-    setFormAttributes(editForm, userId, 'EditOrUpdate');
+    if (!row) {
+      console.error('Could not find parent row for button', editButton);
+      return;
+    }
 
-    // Set the input asp-for attributes (for model binding)
-    setElementAttributes(document.getElementById('EditUser_UserName'), 'asp-for', `Users[${userId}].UserName`);
-    setElementAttributes(document.getElementById('EditUser_Email'), 'asp-for', `Users[${userId}].Email`);
-    setElementAttributes(document.getElementById('EditUser_IsVerified'), 'asp-for', `Users[${userId}].IsVerified`);
-    setElementAttributes(
-      document.getElementById('EditUser_ContactNumber'),
-      'asp-for',
-      `Users[${userId}].ContactNumber`
-    );
-    setElementAttributes(document.getElementById('EditUser_SelectedRole'), 'asp-for', `Users[${userId}].SelectedRole`);
-    setElementAttributes(document.getElementById('EditUser_SelectedPlan'), 'asp-for', `Users[${userId}].SelectedPlan`);
+    const userName = row.querySelector(`.user-name-full-${userId}`).innerText;
+    const userEmail = row.cells[3].innerText;
+    const isVerifiedElement = row.querySelector(`.user-verified-${userId}`);
+    const isVerified = isVerifiedElement ? isVerifiedElement.dataset.isVerified : 'false';
+
+    // Set the hidden EditUserId
+    const editUserIdInput = document.getElementById('EditUserId');
+    if (editUserIdInput) editUserIdInput.value = userId;
 
     // Set the input values (for value binding)
-    document.getElementById('EditUser_UserName').value = userName;
-    document.getElementById('EditUser_Email').value = userEmail;
-    document.getElementById('EditUser_IsVerified').checked = JSON.parse(isVerified.toLowerCase());
-    document.getElementById('EditUser_ContactNumber').value = userContactNumber;
-    document.getElementById('EditUser_SelectedRole').value = userSelectedRole.toLowerCase();
-    document.getElementById('EditUser_SelectedPlan').value = userSelectedPlan.toLowerCase();
+    const userNameInput = document.getElementById('EditUser_UserName');
+    if (userNameInput) userNameInput.value = userName;
+
+    const userEmailInput = document.getElementById('EditUser_Email');
+    if (userEmailInput) userEmailInput.value = userEmail;
+
+    const isVerifiedCheckbox = document.getElementById('EditUser_IsVerified');
+    if (isVerifiedCheckbox) isVerifiedCheckbox.checked = isVerified.toLowerCase() === 'true';
   };
 
-  // Attach event listeners for "Edit User" buttons (pencil icon)
-  const editUserButtons = document.querySelectorAll("[id$='-editUser']");
-  editUserButtons.forEach(editButton => {
-    editButton.addEventListener('click', () => handleEditUserModal(editButton));
+  // Event Delegation for "Edit User" buttons (pencil icon)
+  document.addEventListener('click', function (e) {
+    const editButton = e.target.closest('.edit-user-button');
+    if (editButton) {
+      handleEditUserModal(editButton);
+    }
   });
 
   // Check and Call the functions to check and display success messages on page reload (for delete, create and update)
@@ -168,35 +162,6 @@ function submitFormAndSetSuccessFlag(form, flagName) {
           }
         }
       },
-      'NewUser.ContactNumber': {
-        validators: {
-          notEmpty: {
-            message: 'Please enter a contact number'
-          },
-          phone: {
-            country: 'US',
-            message: 'Please enter a valid phone number'
-          },
-          stringLength: {
-            min: 12,
-            message: 'The contact number must be 10 characters long'
-          }
-        }
-      },
-      'NewUser.SelectedRole': {
-        validators: {
-          notEmpty: {
-            message: 'Please select a role'
-          }
-        }
-      },
-      'NewUser.SelectedPlan': {
-        validators: {
-          notEmpty: {
-            message: 'Please select a plan'
-          }
-        }
-      }
     },
     plugins: {
       trigger: new FormValidation.plugins.Trigger(),
@@ -267,35 +232,6 @@ function submitFormAndSetSuccessFlag(form, flagName) {
           }
         }
       },
-      'user.ContactNumber': {
-        validators: {
-          notEmpty: {
-            message: 'Please enter a contact number'
-          },
-          phone: {
-            country: 'US',
-            message: 'Please enter a valid phone number'
-          },
-          stringLength: {
-            min: 12,
-            message: 'The contact number must be 10 characters long'
-          }
-        }
-      },
-      'user.SelectedRole': {
-        validators: {
-          notEmpty: {
-            message: 'Please select a role'
-          }
-        }
-      },
-      'user.SelectedPlan': {
-        validators: {
-          notEmpty: {
-            message: 'Please select a plan'
-          }
-        }
-      }
     },
     plugins: {
       trigger: new FormValidation.plugins.Trigger(),
@@ -338,7 +274,7 @@ $(document).ready(function () {
     headingColor = config.colors.headingColor;
   }
 
-  // User List DataTable Initialization (For User CRUD Page)
+  // User List DataTable Initialization (For User Admin Page)
   $('#userTable').DataTable({
     order: [[1, 'desc']],
     displayLength: 7,
@@ -356,7 +292,7 @@ $(document).ready(function () {
     language: {
       sLengthMenu: '_MENU_',
       search: '',
-      searchPlaceholder: 'Search User',
+      searchPlaceholder: 'Rechercher Utilisateur',
       paginate: {
         next: '<i class="ti ti-chevron-right ti-sm"></i>',
         previous: '<i class="ti ti-chevron-left ti-sm"></i>'
@@ -597,18 +533,18 @@ $(document).ready(function () {
             if (i < columns.length - 1) {
               return col.title !== ''
                 ? '<tr data-dt-row="' +
-                    col.rowIndex +
-                    '" data-dt-column="' +
-                    col.columnIndex +
-                    '">' +
-                    '<td>' +
-                    col.title +
-                    ':' +
-                    '</td> ' +
-                    '<td>' +
-                    col.data +
-                    '</td>' +
-                    '</tr>'
+                col.rowIndex +
+                '" data-dt-column="' +
+                col.columnIndex +
+                '">' +
+                '<td>' +
+                col.title +
+                ':' +
+                '</td> ' +
+                '<td>' +
+                col.data +
+                '</td>' +
+                '</tr>'
                 : '';
             }
             return '';

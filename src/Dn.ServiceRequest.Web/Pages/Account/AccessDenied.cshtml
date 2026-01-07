@@ -1,0 +1,21 @@
+@page
+@model Dn.ServiceRequest.Web.Pages.Account.AccessDeniedModel
+@{
+    Layout = "Layouts/_HorizontalLayout";
+    ViewData["Title"] = "Accès Refusé";
+}
+
+@section PageStyles {
+    <link rel="stylesheet" href="~/vendor/css/pages/page-misc.css">
+}
+
+<div class="container-xxl container-p-y">
+  <div class="misc-wrapper d-flex flex-column align-items-center text-center">
+    <h2 class="mb-2 mx-2">Accès Refusé !</h2>
+    <p class="mb-4 mx-2">Oops ! 🔐 Vous n'avez pas les permissions nécessaires pour accéder à cette page.</p>
+    <a href="/" class="btn btn-primary mb-4">Retour à l'accueil</a>
+    <div class="mt-4">
+      <img src="~/img/illustrations/page-misc-you-are-not-authorized.png" alt="page-misc-you-are-not-authorized" width="400" class="img-fluid">
+    </div>
+  </div>
+</div>

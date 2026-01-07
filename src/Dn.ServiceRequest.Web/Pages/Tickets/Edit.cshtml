@@ -1,5 +1,8 @@
 @page "{id:guid}"
+@using Microsoft.AspNetCore.Authorization
+
 @model Dn.ServiceRequest.Web.Pages.Tickets.Edit
+@inject IAuthorizationService AuthorizationService
 @{
     Layout = "Layouts/_HorizontalLayout";
     ViewData["Title"] = "Ticket  - HR Service Request";

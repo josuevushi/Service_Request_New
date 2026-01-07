@@ -155,10 +155,47 @@
       </ul>
     </li>
 
-    <li class='menu-item@(currentPage == "/CRUD/UserCRUD" ? " active" : "")'>
-      <a asp-page="/CRUD/UserCRUD" class="menu-link">
-        <i class="menu-icon tf-icons ti ti-database"></i>
-        <div data-i18n="Users (CRUD)">Users (CRUD)</div>
+    <li class='menu-item@(currentPage == "/Admin/UserAdmin" ? " active" : "")'>
+      <a asp-page="/Admin/UserAdmin" class="menu-link">
+        <i class="menu-icon tf-icons ti ti-users"></i>
+        <div data-i18n="Users (Admin)">Gestion Utilisateurs</div>
+      </a>
+    </li>
+
+    <li class='menu-item@(currentPage == "/Admin/RoleAdmin" ? " active" : "")'>
+      <a asp-page="/Admin/RoleAdmin" class="menu-link">
+        <i class="menu-icon tf-icons ti ti-settings"></i>
+        <div data-i18n="Roles (Admin)">Gestion Rôles</div>
+      </a>
+    </li>
+    <li class='menu-item@(currentPage == "/Admin/FamilleAdmin" ? " active" : "")'>
+      <a asp-page="/Admin/FamilleAdmin" class="menu-link">
+        <i class="menu-icon tf-icons ti ti-category"></i>
+        <div data-i18n="Familles">Gestion Familles</div>
+      </a>
+    </li>
+    <li class='menu-item@(currentPage == "/Admin/TypeDemandeAdmin" ? " active" : "")'>
+      <a asp-page="/Admin/TypeDemandeAdmin" class="menu-link">
+        <i class="menu-icon tf-icons ti ti-list-details"></i>
+        <div data-i18n="Types de Demande">Gestion Types</div>
+      </a>
+    </li>
+    <li class='menu-item@(currentPage == "/Admin/GroupeAdmin" ? " active" : "")'>
+      <a asp-page="/Admin/GroupeAdmin" class="menu-link">
+        <i class="menu-icon tf-icons ti ti-users-group"></i>
+        <div data-i18n="Groupes">Gestion Groupes</div>
+      </a>
+    </li>
+    <li class='menu-item@(currentPage == "/Admin/GroupeUserAdmin" ? " active" : "")'>
+      <a asp-page="/Admin/GroupeUserAdmin" class="menu-link">
+        <i class="menu-icon tf-icons ti ti-user-plus"></i>
+        <div data-i18n="Utilisateurs par Groupe">Utilisateurs / Groupe</div>
+      </a>
+    </li>
+    <li class='menu-item@(currentPage == "/Admin/GroupeTypeAdmin" ? " active" : "")'>
+      <a asp-page="/Admin/GroupeTypeAdmin" class="menu-link">
+        <i class="menu-icon tf-icons ti ti-list-check"></i>
+        <div data-i18n="Types par Groupe">Types / Groupe</div>
       </a>
     </li>
 
