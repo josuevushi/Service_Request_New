@@ -12,6 +12,7 @@ public static class ServiceRequestPermissions
         public const string Pending = Traiter + ".Pending";
         public const string Close = Traiter + ".Close";
         public const string Transfert = Traiter + ".Transfert";
+        public const string GlobalSearch = Default + ".GlobalSearch";
     }
 
     public static class Familles

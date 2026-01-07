@@ -19,6 +19,7 @@
         "Permission:Types": "Gestion des Types de Demande",
         "Permission:Groupes": "Gestion des Groupes",
         "Permission:GroupeUsers": "Gestion des Utilisateurs par Groupe",
-        "Permission:GroupeTypes": "Gestion des Types par Groupe"
+        "Permission:GroupeTypes": "Gestion des Types par Groupe",
+        "Permission:GlobalSearch": "Recherche Globale de Tickets"
     }
 }

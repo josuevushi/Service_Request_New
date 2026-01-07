@@ -124,11 +124,13 @@ $("#postComment").click(function () {
         var month = (now.getMonth() + 1).toString().padStart(2, '0');
         var year = now.getFullYear();
 
+        var currentUserName = $("#currentUserName").val() || "Inconnu";
+
         var newComment = `
             <div class="comment-card">
                 <div class="comment-header">
                     <div class="user-info">
-                        Ton Nom
+                        ${currentUserName}
                     </div>   <div class="date">${day}/${month}/${year} • ${hours}:${minutes}</div>
                 </div> <div class="comment-text">${commentText}</div>
             </div>

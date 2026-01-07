@@ -1,8 +1,9 @@
 @page "{id:guid}"
 @using Microsoft.AspNetCore.Authorization
-
+@using Volo.Abp.Users
 @model Dn.ServiceRequest.Web.Pages.Tickets.Edit
 @inject IAuthorizationService AuthorizationService
+@inject ICurrentUser CurrentUser
 @{
     Layout = "Layouts/_HorizontalLayout";
     ViewData["Title"] = "Ticket  - HR Service Request";
@@ -358,6 +359,7 @@
                                                         id="pourcentageId"
                                                         value="@Model.Ticket.Pourcentage" />  
                                                 </div>
+                                                <input type="hidden" id="currentUserName" value="@CurrentUser.UserName" />
                                                  <div class="mb-6">
                                                     <label class="form-label" for="basic-default-fullname">Groupe d'utilisateur </label>
                                                     <input type="text"

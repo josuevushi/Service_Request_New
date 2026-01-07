@@ -19,5 +19,6 @@ namespace Dn.ServiceRequest.Tickets
         Task AssignTicketToUser(Guid ticketId, Guid userId);
         Task<List<MesTicketsDto>> GetTicketsAssignes();
         Task<List<MesTicketsDto>> GetTicketsGroupe();
+        Task<List<MesTicketsDto>> GlobalSearchAsync(string numero);
     }
 }

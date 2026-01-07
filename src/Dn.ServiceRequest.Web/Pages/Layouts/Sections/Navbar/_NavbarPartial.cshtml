@@ -408,7 +408,7 @@
     <!-- User -->
     <li class="nav-item navbar-dropdown dropdown-user dropdown">
                
-                @if (User.Identity.IsAuthenticated)
+                @if (User.Identity != null && User.Identity.IsAuthenticated)
                 {
                     // Récupérer le prénom et le nom à partir des claims de l'utilisateur
                     var firstName = User.FindFirst("given_name")?.Value ?? "";

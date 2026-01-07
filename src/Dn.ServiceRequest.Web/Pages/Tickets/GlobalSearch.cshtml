@@ -1,0 +1,135 @@
+@page
+@model Dn.ServiceRequest.Web.Pages.Tickets.GlobalSearchModel
+@{
+    Layout = "Layouts/_HorizontalLayout";
+    ViewData["Title"] = "Ticket  - HR Service Request";
+}
+
+@section VendorStyles {
+    <link rel="stylesheet" href="~/vendor/libs/nouislider/nouislider.dist.css" />
+    <link rel="stylesheet" href="~/vendor/libs/swiper/swiper.dist.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/apex-charts/apex-charts.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/dropzone/dropzone.css" />
+}
+@section PageStyles {
+    <link rel="stylesheet" href="~/vendor/css/pages/front-page-landing.dist.css" />
+    
+    <link rel="stylesheet" href="~/assets/vendor/libs/select2/select2.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/tagify/tagify.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/bootstrap-select/bootstrap-select.css" />
+}
+@section VendorScripts {
+    <script src="~/vendor/libs/nouislider/nouislider.dist.js"></script>
+    <script src="~/vendor/libs/swiper/swiper.dist.js"></script>    
+    <script src="~/assets/vendor/libs/apex-charts/apexcharts.js"></script>    
+    <script src="~/assets/vendor/libs/dropzone/dropzone.js"></script>
+    <script src="~/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
+    <script src="~/assets/js/tables-datatables-basic.js"></script>
+}
+
+@section PageScripts {
+    <script src="~/assets/vendor/libs/select2/select2.js"></script>
+    <script src="~/assets/vendor/libs/tagify/tagify.js"></script>
+    <script src="~/assets/vendor/libs/bootstrap-select/bootstrap-select.js"></script>
+    <script src="~/Abp/ServiceProxyScript"></script>
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="py-3 mb-4">
+        <span class="text-muted fw-light">Tickets /</span> Recherche Globale
+    </h4>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="get" class="row g-3">
+                        <div class="col-md-10">
+                            <div class="input-group input-group-merge">
+                                <span class="input-group-text" id="basic-addon-search31"><i class="ti ti-search"></i></span>
+                                <input type="text" class="form-control" name="SearchTerm" value="@Model.SearchTerm" placeholder="Entrez le numéro du ticket (ex: TCK-0126-0001)..." aria-label="Recherche" aria-describedby="basic-addon-search31">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="ti ti-search me-1"></i> Rechercher
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.SearchTerm))
+    {
+        <div class="card">
+            <h5 class="card-header">Résultats de la recherche pour "@Model.SearchTerm"</h5>
+            <div class="table-responsive text-nowrap">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Numéro</th>
+                            <th>Objet</th>
+                            <th>Type / Famille</th>
+                            <th>Statut</th>
+                            <th>Demandeur</th>
+                            <th>Assigné à</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0">
+                        @if (Model.Tickets.Any())
+                        {
+                            @foreach (var ticket in Model.Tickets)
+                            {
+                                <tr>
+                                    <td><strong>@ticket.Numero</strong></td>
+                                    <td>@ticket.Objet</td>
+                                    <td>
+                                        <div class="d-flex flex-column">
+                                            <span class="fw-bold">@ticket.Type</span>
+                                            <small class="text-muted">@ticket.Famille</small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        @{
+                                            var badgeClass = ticket.Status switch
+                                            {
+                                                "Open" => "bg-label-primary",
+                                                "WorkInProgress" => "bg-label-info",
+                                                "Pending" => "bg-label-warning",
+                                                "Close" => "bg-label-success",
+                                                _ => "bg-label-secondary"
+                                            };
+                                        }
+                                        <span class="badge @badgeClass">@ticket.Status</span>
+                                    </td>
+                                    <td>@ticket.User</td>
+                                    <td>@(ticket.Groupe ?? "Non assigné")</td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                                <i class="ti ti-dots-vertical"></i>
+                                            </button>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-menu" href="/Tickets/Edit/@ticket.Id"><i class="ti ti-eye me-1"></i> Voir détails</a>
+                                            </div>
+                                             <a class="btn btn-sm btn-icon item-edit" href="/Tickets/Edit/@ticket.Id"><i class="ti ti-eye"></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center">Aucun ticket trouvé avec ce numéro.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>

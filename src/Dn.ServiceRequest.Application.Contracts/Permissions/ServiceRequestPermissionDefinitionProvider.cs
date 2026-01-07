@@ -11,6 +11,7 @@ public class ServiceRequestPermissionDefinitionProvider : PermissionDefinitionPr
         var myGroup = context.AddGroup(ServiceRequestPermissions.GroupName, L("Permission:ServiceRequest"));
 
         var ticketsPermission = myGroup.AddPermission(ServiceRequestPermissions.Tickets.Default, L("Permission:Tickets"));
+        ticketsPermission.AddChild(ServiceRequestPermissions.Tickets.GlobalSearch, L("Permission:GlobalSearch"));
         
         var traiterPermission = ticketsPermission.AddChild(ServiceRequestPermissions.Tickets.Traiter, L("Permission:TraiterTicket"));
         traiterPermission.AddChild(ServiceRequestPermissions.Tickets.Start, L("Permission:Start"));

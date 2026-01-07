@@ -587,5 +587,82 @@ namespace Dn.ServiceRequest.Tickets
             ticket.AssignedTo = userId;
             await Repository.UpdateAsync(ticket, autoSave: true);
         }
+
+        public async Task<List<MesTicketsDto>> GlobalSearchAsync(string numero)
+        {
+            if (string.IsNullOrWhiteSpace(numero))
+            {
+                return new List<MesTicketsDto>();
+            }
+
+            var types = await _typeRepository.GetQueryableAsync();
+            var familles = await _familleRepository.GetQueryableAsync();
+            var tcks = await Repository.GetQueryableAsync();
+            var users = await _userRepository.GetQueryableAsync();
+            var groups = await _repositoryGroupe.GetQueryableAsync();
+            var groupUsers = await _repositoryGroupeUser.GetQueryableAsync();
+
+            var query =
+                from tck in tcks
+                join type in types on tck.Type_id equals type.Id
+                join famille in familles on type.Famille_id equals famille.Id
+                join usr in users on tck.CreatorId equals usr.Id
+                join gu in groupUsers on usr.Id equals gu.User_id into guJoin
+                from gu in guJoin.DefaultIfEmpty()
+                join grp in groups on gu.Groupe_id equals grp.Id into grpJoin
+                from grp in grpJoin.DefaultIfEmpty()
+                where tck.Numero.Contains(numero)
+                select new
+                {
+                    tck.Id,
+                    type.Nom,
+                    Famille = famille.Nom,
+                    tck.Numero,
+                    tck.Status,
+                    Objet = tck.Object,
+                    tck.CreationTime,
+                    tck.EstimateDate,
+                    tck.PendingDate,
+                    tck.ClosureDate,
+                    User = usr.UserName,
+                    GroupeName = grp != null ? grp.Nom : null
+                };
+
+            var data = await AsyncExecuter.ToListAsync(query);
+
+            return data.Select(x =>
+            {
+                DateTime dateReference = x.Status switch
+                {
+                    Status.Open => _clock.Now,
+                    Status.WorkInProgress => _clock.Now,
+                    Status.Pending => x.PendingDate,
+                    Status.Close => x.ClosureDate,
+                    _ => _clock.Now
+                };
+                if (x.PendingDate != DateTime.MinValue && x.Status == Status.Close)
+                {
+                    dateReference = x.PendingDate;
+                }
+                return new MesTicketsDto
+                {
+                    Id = x.Id,
+                    Type = x.Nom,
+                    Famille = x.Famille,
+                    Numero = x.Numero,
+                    Status = x.Status.ToString(),
+                    Objet = x.Objet,
+                    CreationDate = x.CreationTime,
+                    EstimateDate = x.EstimateDate,
+                    User = x.User,
+                    Groupe = x.GroupeName,
+                    Pourcentage = PourcentageEntreDeuxDates(
+                        x.CreationTime,
+                        x.EstimateDate,
+                        dateReference
+                    )
+                };
+            }).ToList();
+        }
     }
 }
