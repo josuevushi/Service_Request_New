@@ -34,26 +34,8 @@ namespace Dn.ServiceRequest.Web.Pages.Tickets
 {
     Id = id;
 
-    // Récupération du ticket
-    Ticket = await _ticketAppService.GetAsync(id);
-
-    // Préparer l'objet pour mise à jour
-    var updateDto = new CreateUpdateTicketDto
-    {
-        Object = Ticket.Object,
-        Description = Ticket.Description,
-        Json_form=Ticket.Json_form,
-        Type_id = Ticket.Type_id,
-        Numero = Ticket.Numero,
-        Status = Status.Close,
-        EstimateDate=Ticket.EstimateDate,
-        StartDate = Ticket.StartDate,
-        ClosureDate=_clock.Now,
-        PendingDate=Ticket.PendingDate
-    };
-
-    // Mise à jour du ticket
-    await _ticketAppService.UpdateAsync(id, updateDto);
+    // Mise à jour du ticket (clôture et notification)
+    await _ticketAppService.CloseTicketAsync(id);
 
     _logger.LogInformation("Id reçu : {Id}", id);
 

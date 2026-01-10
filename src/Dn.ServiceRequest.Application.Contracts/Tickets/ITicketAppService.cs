@@ -20,5 +20,6 @@ namespace Dn.ServiceRequest.Tickets
         Task<List<MesTicketsDto>> GetTicketsAssignes();
         Task<List<MesTicketsDto>> GetTicketsGroupe();
         Task<List<MesTicketsDto>> GlobalSearchAsync(string numero);
+        Task CloseTicketAsync(Guid id);
     }
 }

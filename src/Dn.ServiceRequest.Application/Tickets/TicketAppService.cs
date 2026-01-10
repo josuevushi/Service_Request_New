@@ -19,6 +19,7 @@ using Dn.ServiceRequest.GroupeUsers;
 using Volo.Abp.Authorization;
 using Volo.Abp.Timing;
 using System.IO;
+using Volo.Abp.BackgroundJobs;
 
 namespace Dn.ServiceRequest.Tickets
 {
@@ -42,6 +43,7 @@ namespace Dn.ServiceRequest.Tickets
         private readonly IRepository<GroupeUser, Guid> _repositoryGroupeUser;
 
         private readonly IClock _clock;
+        private readonly IBackgroundJobManager _backgroundJobManager;
 
         public TicketAppService(
             IRepository<Ticket, Guid> repository,
@@ -53,7 +55,8 @@ namespace Dn.ServiceRequest.Tickets
             IRepository<Groupe, Guid> repositoryGroupe,
             IRepository<GroupeType, Guid> repositoryGroupeType,
             IRepository<GroupeUser, Guid> repositoryGroupeUser,
-            IClock clock
+            IClock clock,
+            IBackgroundJobManager backgroundJobManager
             )
             : base(repository)
         {
@@ -66,6 +69,7 @@ namespace Dn.ServiceRequest.Tickets
             _repositoryGroupeType = repositoryGroupeType;
             _repositoryGroupeUser = repositoryGroupeUser;
             _clock = clock;
+            _backgroundJobManager = backgroundJobManager;
         }
         public async Task<UnTicketsDto> GetUnTicketAsync(string ticketId)
         {
@@ -507,6 +511,8 @@ namespace Dn.ServiceRequest.Tickets
                 }
             }
 
+            await SendTicketNotificationAsync(tck, "Création");
+
             return tck;
 
         }
@@ -536,6 +542,8 @@ namespace Dn.ServiceRequest.Tickets
 
             tck = await Repository.InsertAsync(tck, autoSave: true);
             //
+
+            await SendTicketNotificationAsync(tck, "Création");
 
             return tck;
         }
@@ -677,6 +685,30 @@ namespace Dn.ServiceRequest.Tickets
                     )
                 };
             }).ToList();
+        }
+        public async Task CloseTicketAsync(Guid id)
+        {
+            var ticket = await Repository.GetAsync(id);
+            if (ticket == null)
+            {
+                throw new BusinessException("Ticket non trouvé");
+            }
+
+            ticket.Status = Status.Close;
+            ticket.ClosureDate = _clock.Now;
+
+            await Repository.UpdateAsync(ticket, autoSave: true);
+
+            await SendTicketNotificationAsync(ticket, "Clôture");
+        }
+
+        private async Task SendTicketNotificationAsync(Ticket ticket, string typeNotification)
+        {
+            await _backgroundJobManager.EnqueueAsync(new TicketEmailNotificationArgs
+            {
+                TicketId = ticket.Id,
+                TypeNotification = typeNotification
+            });
         }
     }
 }

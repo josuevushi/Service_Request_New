@@ -226,7 +226,7 @@ public class ServiceRequestWebModule : AbpModule
 
         if (!env.IsDevelopment())
         {
-            app.UseErrorPage();
+            app.UseExceptionHandler("/Error");
         }
 
         app.UseCorrelationId();

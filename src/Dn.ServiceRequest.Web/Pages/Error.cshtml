@@ -1,0 +1,21 @@
+@page
+@model Dn.ServiceRequest.Web.Pages.ErrorModel
+@{
+    Layout = "Layouts/_HorizontalLayout";
+    ViewData["Title"] = "Erreur Interne";
+}
+
+@section PageStyles {
+    <link rel="stylesheet" href="~/vendor/css/pages/page-misc.css">
+}
+
+<div class="container-xxl container-p-y">
+  <div class="misc-wrapper d-flex flex-column align-items-center text-center">
+    <h2 class="mb-2 mx-2">Erreur Interne du Serveur !</h2>
+    <p class="mb-4 mx-2">Oops ! 😱 Quelque chose s'est mal passé sur nos serveurs. Veuillez réessayer plus tard.</p>
+    <a href="/" class="btn btn-primary mb-4">Retour à l'accueil</a>
+    <div class="mt-4">
+      <img src="~/img/illustrations/page-misc-error.png" alt="page-misc-error" width="400" class="img-fluid">
+    </div>
+  </div>
+</div>
