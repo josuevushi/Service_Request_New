@@ -43,6 +43,12 @@ public class ServiceRequestPermissionDefinitionProvider : PermissionDefinitionPr
         groupeTypes.AddChild(ServiceRequestPermissions.GroupeTypes.Create, L("Permission:Create"));
         groupeTypes.AddChild(ServiceRequestPermissions.GroupeTypes.Update, L("Permission:Update"));
         groupeTypes.AddChild(ServiceRequestPermissions.GroupeTypes.Delete, L("Permission:Delete"));
+
+        var rapports = myGroup.AddPermission(ServiceRequestPermissions.Rapports.Default, L("Permission:Rapports"));
+        rapports.AddChild(ServiceRequestPermissions.Rapports.Create, L("Permission:Create"));
+        rapports.AddChild(ServiceRequestPermissions.Rapports.Update, L("Permission:Update"));
+        rapports.AddChild(ServiceRequestPermissions.Rapports.Delete, L("Permission:Delete"));
+        rapports.AddChild(ServiceRequestPermissions.Rapports.AssignRole, L("Permission:AssignRole"));
     }
 
     private static LocalizableString L(string name)

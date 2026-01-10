@@ -1,5 +1,8 @@
 @page
+@using Microsoft.AspNetCore.Authorization
+@using Dn.ServiceRequest.Permissions
 @model Dn.ServiceRequest.Web.Pages.Admin.TypeDemandeAdminModel
+@inject IAuthorizationService AuthorizationService
 @{
     Layout = "Layouts/_HorizontalLayout";
     ViewData["Title"] = "Gestion des Types de Demande";
@@ -32,9 +35,12 @@
         <div class="card">
             <div class="card-header border-bottom d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0">Liste des Types de Demande</h5>
-                <button class="btn btn-primary" data-bs-toggle="offcanvas" data-bs-target="#createTypeOffcanvas">
-                    <i class="ti ti-plus me-1"></i> Ajouter un Type
-                </button>
+                @if (await AuthorizationService.IsGrantedAsync(ServiceRequestPermissions.Types.Create))
+                {
+                    <button class="btn btn-primary" data-bs-toggle="offcanvas" data-bs-target="#createTypeOffcanvas">
+                        <i class="ti ti-plus me-1"></i> Ajouter un Type
+                    </button>
+                }
             </div>
             <div class="card-datatable table-responsive">
                 <table id="typeTable" class="table border-top">
@@ -70,13 +76,19 @@
                                 </td>
                                 <td>
                                     <div class="d-flex align-items-center">
-                                        <a href="javascript:;" class="text-body edit-type-button" data-id="@type.Id" data-bs-toggle="offcanvas" data-bs-target="#editTypeOffcanvas">
-                                            <i class="ti ti-edit ti-sm me-2"></i>
-                                        </a>
-                                        <form id="@type.Id-deleteForm" asp-page-handler="Delete" asp-route-id="@type.Id" method="post" style="display:none;"></form>
-                                        <a href="javascript:;" class="text-body" onclick="showDeleteConfirmation('@type.Id', '@type.Nom')">
-                                            <i class="ti ti-trash ti-sm"></i>
-                                        </a>
+                                        @if (await AuthorizationService.IsGrantedAsync(ServiceRequestPermissions.Types.Update))
+                                        {
+                                            <a href="javascript:;" class="text-body edit-type-button" data-id="@type.Id" data-bs-toggle="offcanvas" data-bs-target="#editTypeOffcanvas">
+                                                <i class="ti ti-edit ti-sm me-2"></i>
+                                            </a>
+                                        }
+                                        @if (await AuthorizationService.IsGrantedAsync(ServiceRequestPermissions.Types.Delete))
+                                        {
+                                            <form id="@type.Id-deleteForm" asp-page-handler="Delete" asp-route-id="@type.Id" method="post" style="display:none;"></form>
+                                            <a href="javascript:;" class="text-body" onclick="showDeleteConfirmation('@type.Id', '@type.Nom')">
+                                                <i class="ti ti-trash ti-sm"></i>
+                                            </a>
+                                        }
                                     </div>
                                 </td>
                             </tr>

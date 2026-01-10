@@ -1,3 +1,7 @@
+@using Microsoft.AspNetCore.Authorization
+@using Volo.Abp.Identity
+@using Dn.ServiceRequest.Permissions
+@inject IAuthorizationService AuthorizationService
 @{
   TempData.Keep();
 
@@ -115,41 +119,47 @@
           </li-->
 
           <!-- Components -->
-          <li class='menu-item@((currentPage.StartsWith("/Cards/") || currentPage.StartsWith("/Ui/") || currentPage.StartsWith("/ExtendedUi/") || currentPage.StartsWith("/Icons/")) ? "  " : "")'>
-              <a href="javascript:void(0)" class="menu-link menu-toggle">
-                  <i class="menu-icon tf-icons ti ti-ticket"></i>
-                  <div data-i18n="Tickets à traiter">Tickets à traiter</div>
-              </a>
-              <ul class="menu-sub">
-                  <!-- Cards -->
-                  <li class='menu-item@(currentPage.StartsWith("/Cards/") ? "  " : "")'>
-                      <a href="/groupes/mestickets/" class="menu-link">
-                          <i class="menu-icon tf-icons ti ti-list"></i>
-                          <div data-i18n="Mes tickets">Mes tickets</div>
-                      </a>
+          @if (await AuthorizationService.IsGrantedAsync(ServiceRequestPermissions.Tickets.Traiter))
+          {
+              <li class='menu-item@((currentPage.StartsWith("/Cards/") || currentPage.StartsWith("/Ui/") || currentPage.StartsWith("/ExtendedUi/") || currentPage.StartsWith("/Icons/")) ? "  " : "")'>
+                  <a href="javascript:void(0)" class="menu-link menu-toggle">
+                      <i class="menu-icon tf-icons ti ti-ticket"></i>
+                      <div data-i18n="Tickets à traiter">Tickets à traiter</div>
+                  </a>
+                  <ul class="menu-sub">
+                      <!-- Cards -->
+                      <li class='menu-item@(currentPage.StartsWith("/Cards/") ? "  " : "")'>
+                          <a href="/groupes/mestickets/" class="menu-link">
+                              <i class="menu-icon tf-icons ti ti-list"></i>
+                              <div data-i18n="Mes tickets">Mes tickets</div>
+                          </a>
 
-                  </li>
-               
-                  <!-- Extended components -->
-                  <li class='menu-item@(currentPage.StartsWith("/ExtendedUi/") ? "  " : "")'>
-                      <a href="/groupes/" class="menu-link ">
-                          <i class="menu-icon tf-icons ti ti-components"></i>
-                          <div data-i18n="Tickets du Groupe">Tickets du Groupe</div>
-                      </a>
+                      </li>
+                   
+                      <!-- Extended components -->
+                      <li class='menu-item@(currentPage.StartsWith("/ExtendedUi/") ? "  " : "")'>
+                          <a href="/groupes/" class="menu-link ">
+                              <i class="menu-icon tf-icons ti ti-components"></i>
+                              <div data-i18n="Tickets du Groupe">Tickets du Groupe</div>
+                          </a>
 
-                  </li>
+                      </li>
 
-                  <li class='menu-item@(currentPage.StartsWith("/Tickets/GlobalSearch") ? "  " : "")'>
-                      <a href="/Tickets/GlobalSearch" class="menu-link ">
-                          <i class="menu-icon tf-icons ti ti-search"></i>
-                          <div data-i18n="Recherche Globale">Recherche Globale</div>
-                      </a>
+                      @if (await AuthorizationService.IsGrantedAsync(ServiceRequestPermissions.Tickets.GlobalSearch))
+                      {
+                          <li class='menu-item@(currentPage.StartsWith("/Tickets/GlobalSearch") ? "  " : "")'>
+                              <a href="/Tickets/GlobalSearch" class="menu-link ">
+                                  <i class="menu-icon tf-icons ti ti-search"></i>
+                                  <div data-i18n="Recherche Globale">Recherche Globale</div>
+                              </a>
 
-                  </li>
+                          </li>
+                      }
 
-               
-              </ul>
-          </li>
+                   
+                  </ul>
+              </li>
+          }
 
 
         <!--li class='menu-item@((currentPage.StartsWith("/Pages/") || currentPage.StartsWith("/Wizards/") || currentPage.StartsWith("/Auth/") || currentPage.StartsWith("/Modals/")) ? "  " : "")'>
@@ -206,55 +216,79 @@
 
                 </ul>
             </li-->
-            <li class='menu-item@(currentPage.StartsWith("/Admin/UserAdmin") ? "  " : "")'>
-                <a href="/Admin/UserAdmin" class="menu-link">
-                    <i class="menu-icon tf-icons ti ti-user-cog"></i>
-                    <div data-i18n="Gestion d'utilisateurs">Gestion d'utilisateurs</div>
-                </a>
-            </li>
-            <li class='menu-item@(currentPage.StartsWith("/Admin/RoleAdmin") ? "  " : "")'>
-                <a href="/Admin/RoleAdmin" class="menu-link">
-                    <i class="menu-icon tf-icons ti ti-sparkles"></i>
-                    <div data-i18n="Roles & Scopes">Rôle & Scope</div>
-                </a>
-            </li>
-            <li class='menu-item@(currentPage.StartsWith("/Admin/FamilleAdmin") ? "  " : "")'>
-                <a href="/Admin/FamilleAdmin" class="menu-link">
-                    <i class="menu-icon tf-icons ti ti-category"></i>
-                    <div data-i18n="Familles">Familles</div>
-                </a>
-            </li>
-            <li class='menu-item@(currentPage.StartsWith("/Admin/TypeDemandeAdmin") ? "  " : "")'>
-                <a href="/Admin/TypeDemandeAdmin" class="menu-link">
-                    <i class="menu-icon tf-icons ti ti-list-details"></i>
-                    <div data-i18n="Types de Demande">Types de Demande</div>
-                </a>
-            </li>
-            <li class='menu-item@(currentPage.StartsWith("/Admin/GroupeAdmin") ? "  " : "")'>
-                <a href="/Admin/GroupeAdmin" class="menu-link">
-                    <i class="menu-icon tf-icons ti ti-users-group"></i>
-                    <div data-i18n="Groupes">Groupes</div>
-                </a>
-            </li>
-            <li class='menu-item@(currentPage.StartsWith("/Admin/GroupeUserAdmin") ? "  " : "")'>
-                <a href="/Admin/GroupeUserAdmin" class="menu-link">
-                    <i class="menu-icon tf-icons ti ti-user-plus"></i>
-                    <div data-i18n="Utilisateurs par Groupe">Utilisateurs / Groupe</div>
-                </a>
-            </li>
-            <li class='menu-item@(currentPage.StartsWith("/Admin/GroupeTypeAdmin") ? "  " : "")'>
-                <a href="/Admin/GroupeTypeAdmin" class="menu-link">
-                    <i class="menu-icon tf-icons ti ti-list-check"></i>
-                    <div data-i18n="Types par Groupe">Types / Groupe</div>
-                </a>
-            </li>
+            @if (await AuthorizationService.IsGrantedAsync(IdentityPermissions.Users.Default))
+            {
+                <li class='menu-item@(currentPage.StartsWith("/Admin/UserAdmin") ? "  " : "")'>
+                    <a href="/Admin/UserAdmin" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-user-cog"></i>
+                        <div data-i18n="Gestion d'utilisateurs">Gestion d'utilisateurs</div>
+                    </a>
+                </li>
+            }
+            @if (await AuthorizationService.IsGrantedAsync(IdentityPermissions.Roles.Default))
+            {
+                <li class='menu-item@(currentPage.StartsWith("/Admin/RoleAdmin") ? "  " : "")'>
+                    <a href="/Admin/RoleAdmin" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-sparkles"></i>
+                        <div data-i18n="Roles & Scopes">Rôle & Scope</div>
+                    </a>
+                </li>
+            }
+            @if (await AuthorizationService.IsGrantedAsync(ServiceRequestPermissions.Familles.Default))
+            {
+                <li class='menu-item@(currentPage.StartsWith("/Admin/FamilleAdmin") ? "  " : "")'>
+                    <a href="/Admin/FamilleAdmin" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-category"></i>
+                        <div data-i18n="Familles">Familles</div>
+                    </a>
+                </li>
+            }
+            @if (await AuthorizationService.IsGrantedAsync(ServiceRequestPermissions.Types.Default))
+            {
+                <li class='menu-item@(currentPage.StartsWith("/Admin/TypeDemandeAdmin") ? "  " : "")'>
+                    <a href="/Admin/TypeDemandeAdmin" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-list-details"></i>
+                        <div data-i18n="Types de Demande">Types de Demande</div>
+                    </a>
+                </li>
+            }
+            @if (await AuthorizationService.IsGrantedAsync(ServiceRequestPermissions.Groupes.Default))
+            {
+                <li class='menu-item@(currentPage.StartsWith("/Admin/GroupeAdmin") ? "  " : "")'>
+                    <a href="/Admin/GroupeAdmin" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-users-group"></i>
+                        <div data-i18n="Groupes">Groupes</div>
+                    </a>
+                </li>
+            }
+            @if (await AuthorizationService.IsGrantedAsync(ServiceRequestPermissions.GroupeUsers.Default))
+            {
+                <li class='menu-item@(currentPage.StartsWith("/Admin/GroupeUserAdmin") ? "  " : "")'>
+                    <a href="/Admin/GroupeUserAdmin" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-user-plus"></i>
+                        <div data-i18n="Utilisateurs par Groupe">Utilisateurs / Groupe</div>
+                    </a>
+                </li>
+            }
+            @if (await AuthorizationService.IsGrantedAsync(ServiceRequestPermissions.GroupeTypes.Default))
+            {
+                <li class='menu-item@(currentPage.StartsWith("/Admin/GroupeTypeAdmin") ? "  " : "")'>
+                    <a href="/Admin/GroupeTypeAdmin" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-list-check"></i>
+                        <div data-i18n="Types par Groupe">Types / Groupe</div>
+                    </a>
+                </li>
+            }
    
-            <li class='menu-item@(currentPage.StartsWith("/Dashboards/") ? "  " : "")'>
-                <a href="/rapport/" class="menu-link">
-                    <i class="menu-icon tf-icons ti ti-clipboard-text"></i>
-                    <div data-i18n="Rapport ">Rapport</div>
-                </a>
-            </li>
+            @if (await AuthorizationService.IsGrantedAsync(ServiceRequestPermissions.Rapports.Default))
+            {
+                <li class='menu-item@(currentPage.StartsWith("/Dashboards/") ? "  " : "")'>
+                    <a href="/rapport/" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-clipboard-text"></i>
+                        <div data-i18n="Rapport ">Rapport</div>
+                    </a>
+                </li>
+            }
            <li class='menu-item@(currentPage.StartsWith("/Dashboards/") ? "  " : "")'>
     <a href="/Account/logout" class="menu-link"
        >

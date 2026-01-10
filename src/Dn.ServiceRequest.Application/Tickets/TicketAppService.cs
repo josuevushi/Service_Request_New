@@ -481,6 +481,10 @@ namespace Dn.ServiceRequest.Tickets
                 Status = Status.Open,
                 Numero = await GenerateTicketNumberAsync()
             };
+
+            // Affectation automatique
+            tck.AssignedTo = await GetReceiverUserIdAsync(typeGuid);
+
             tck = await Repository.InsertAsync(tck, autoSave: true);
             //
             if (data.Fichiers != null)
@@ -503,17 +507,12 @@ namespace Dn.ServiceRequest.Tickets
                 }
             }
 
-
-
-
             return tck;
 
         }
 
         public async Task<Ticket> AddNewTicket(string objet, string description, string json_from, string IdenType)
         {
-
-
             var maintenant = _clock.Now;
             var typeGuid = Guid.Parse(IdenType);
             var type = await _typeRepository.FindAsync(typeGuid);
@@ -531,11 +530,26 @@ namespace Dn.ServiceRequest.Tickets
                 Status = Status.Open,
                 Numero = await GenerateTicketNumberAsync()
             };
+
+            // Affectation automatique
+            tck.AssignedTo = await GetReceiverUserIdAsync(typeGuid);
+
             tck = await Repository.InsertAsync(tck, autoSave: true);
             //
 
             return tck;
         }
+
+        private async Task<Guid> GetReceiverUserIdAsync(Guid typeId)
+        {
+            var query = from gt in await _repositoryGroupeType.GetQueryableAsync()
+                        join gu in await _repositoryGroupeUser.GetQueryableAsync() on gt.Groupe_id equals gu.Groupe_id
+                        where gt.Type_id == typeId && gu.Is_Receiver
+                        select gu.User_id;
+
+            return await AsyncExecuter.FirstOrDefaultAsync(query);
+        }
+
         private async Task<string> GenerateTicketNumberAsync()
         {
             var now = _clock.Now;

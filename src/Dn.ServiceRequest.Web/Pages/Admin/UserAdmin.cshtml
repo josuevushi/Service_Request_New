@@ -1,5 +1,8 @@
 @page
+@using Microsoft.AspNetCore.Authorization
+@using Volo.Abp.Identity
 @model Dn.ServiceRequest.Web.Pages.Admin.UserAdminModel
+@inject IAuthorizationService AuthorizationService
 @{
     Layout = "Layouts/_HorizontalLayout";
     ViewData["Title"] = "Gestion des Utilisateurs";
@@ -40,9 +43,12 @@
         <div class="card">
             <div class="card-header border-bottom d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0">Liste des Utilisateurs</h5>
-                <button class="btn btn-primary" data-bs-toggle="offcanvas" data-bs-target="#createUserOffcanvas">
-                    <i class="ti ti-plus me-1"></i> Ajouter un Utilisateur
-                </button>
+                @if (await AuthorizationService.IsGrantedAsync(IdentityPermissions.Users.Create))
+                {
+                    <button class="btn btn-primary" data-bs-toggle="offcanvas" data-bs-target="#createUserOffcanvas">
+                        <i class="ti ti-plus me-1"></i> Ajouter un Utilisateur
+                    </button>
+                }
             </div>
             <div class="card-datatable table-responsive">
                 <table id="userTable" class="table border-top">
@@ -78,17 +84,35 @@
                                         <i class="ti ti-shield-check text-success ti-sm"></i>
                                     </span>
                                 </td>
-                                <td>Admin</td> @* Placeholder, should fetch roles *@
-                                <td>Standard</td> @* Placeholder *@
+                                <td>
+                                    @if (Model.UserRoles.ContainsKey(user.Id))
+                                    {
+                                        var roles = Model.UserRoles[user.Id];
+                                        foreach (var role in roles)
+                                        {
+                                            <span class="badge bg-label-primary">@role</span>
+                                        }
+                                    }
+                                </td>
+                                <td>Standard</td>
                                 <td>
                                     <div class="d-flex align-items-center">
-                                        <a href="javascript:;" class="text-body edit-user-button" data-id="@user.Id" data-bs-toggle="offcanvas" data-bs-target="#editUserOffcanvas">
-                                            <i class="ti ti-edit ti-sm me-2"></i>
-                                        </a>
-                                        <form id="@user.Id-deleteForm" asp-page-handler="Delete" asp-route-id="@user.Id" method="post" style="display:none;"></form>
-                                        <a href="javascript:;" class="text-body" onclick="showDeleteConfirmation('@user.Id')">
-                                            <i class="ti ti-trash ti-sm"></i>
-                                        </a>
+                                        @if (await AuthorizationService.IsGrantedAsync(IdentityPermissions.Users.Update))
+                                        {
+                                            <a href="javascript:;" class="text-body edit-user-button" 
+                                               data-id="@user.Id" 
+                                               data-roles="@(Model.UserRoles.ContainsKey(user.Id) ? string.Join(",", Model.UserRoles[user.Id]) : "")"
+                                               data-bs-toggle="offcanvas" data-bs-target="#editUserOffcanvas">
+                                                <i class="ti ti-edit ti-sm me-2"></i>
+                                            </a>
+                                        }
+                                        @if (await AuthorizationService.IsGrantedAsync(IdentityPermissions.Users.Delete))
+                                        {
+                                            <form id="@user.Id-deleteForm" asp-page-handler="Delete" asp-route-id="@user.Id" method="post" style="display:none;"></form>
+                                            <a href="javascript:;" class="text-body" onclick="showDeleteConfirmation('@user.Id')">
+                                                <i class="ti ti-trash ti-sm"></i>
+                                            </a>
+                                        }
                                     </div>
                                 </td>
                             </tr>
@@ -116,6 +140,15 @@
                 <label class="form-label" asp-for="NewUser.Email">Email</label>
                 <input type="email" class="form-control" asp-for="NewUser.Email" placeholder="john.doe@example.com" />
             </div>
+            <div class="mb-6">
+                <label class="form-label" for="NewUser_RoleNames">Rôles</label>
+                <select id="NewUser_RoleNames" name="NewUser.RoleNames" class="select2 form-select" multiple>
+                    @foreach (var role in Model.Roles)
+                    {
+                        <option value="@role.Name">@role.Name</option>
+                    }
+                </select>
+            </div>
             <button type="submit" class="btn btn-primary me-sm-3 me-1 data-submit">Enregistrer</button>
             <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="offcanvas">Annuler</button>
         </form>
@@ -138,6 +171,15 @@
             <div class="mb-6">
                 <label class="form-label" asp-for="user.Email">Email</label>
                 <input type="email" class="form-control" asp-for="user.Email" id="EditUser_Email" placeholder="john.doe@example.com" />
+            </div>
+            <div class="mb-6">
+                <label class="form-label" for="EditUser_RoleNames">Rôles</label>
+                <select id="EditUser_RoleNames" name="user.RoleNames" class="select2 form-select" multiple>
+                    @foreach (var role in Model.Roles)
+                    {
+                        <option value="@role.Name">@role.Name</option>
+                    }
+                </select>
             </div>
             <div class="mb-6">
                 <div class="form-check">

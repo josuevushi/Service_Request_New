@@ -1,5 +1,8 @@
 @page
+@using Microsoft.AspNetCore.Authorization
+@using Volo.Abp.Identity
 @model Dn.ServiceRequest.Web.Pages.Admin.RoleAdminModel
+@inject IAuthorizationService AuthorizationService
 @{
     Layout = "Layouts/_HorizontalLayout";
     ViewData["Title"] = "Gestion des Rôles";
@@ -141,9 +144,12 @@
         <div class="card">
             <div class="card-header border-bottom d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0">Liste des Rôles</h5>
-                <button class="btn btn-primary" data-bs-toggle="offcanvas" data-bs-target="#createRoleOffcanvas">
-                    <i class="ti ti-plus me-1"></i> Ajouter un Rôle
-                </button>
+                @if (await AuthorizationService.IsGrantedAsync(IdentityPermissions.Roles.Create))
+                {
+                    <button class="btn btn-primary" data-bs-toggle="offcanvas" data-bs-target="#createRoleOffcanvas">
+                        <i class="ti ti-plus me-1"></i> Ajouter un Rôle
+                    </button>
+                }
             </div>
             <div class="card-datatable table-responsive">
                 <table id="roleTable" class="table border-top">
@@ -182,18 +188,24 @@
                                 </td>
                                 <td>
                                     <div class="d-flex align-items-center">
-                                        <a href="javascript:;" class="text-body" onclick="editRole('@role.Id', '@role.Name', @role.IsDefault.ToString().ToLower(), @role.IsPublic.ToString().ToLower())">
-                                            <i class="ti ti-edit ti-sm me-2"></i>
-                                        </a>
-                                        <a href="javascript:;" class="text-body" onclick="managePermissions('@role.Name')">
-                                            <i class="ti ti-lock ti-sm me-2"></i>
-                                        </a>
-                                        @if (!role.IsStatic)
+                                        @if (await AuthorizationService.IsGrantedAsync(IdentityPermissions.Roles.Update))
                                         {
-                                            <form id="@role.Id-deleteForm" asp-page-handler="Delete" asp-route-id="@role.Id" method="post" style="display:none;"></form>
-                                            <a href="javascript:;" class="text-body" onclick="showRoleDeleteConfirmation('@role.Id', '@role.Name')">
-                                                <i class="ti ti-trash ti-sm"></i>
+                                            <a href="javascript:;" class="text-body" onclick="editRole('@role.Id', '@role.Name', @role.IsDefault.ToString().ToLower(), @role.IsPublic.ToString().ToLower())">
+                                                <i class="ti ti-edit ti-sm me-2"></i>
                                             </a>
+                                            <a href="javascript:;" class="text-body" onclick="managePermissions('@role.Name')">
+                                                <i class="ti ti-lock ti-sm me-2"></i>
+                                            </a>
+                                        }
+                                        @if (await AuthorizationService.IsGrantedAsync(IdentityPermissions.Roles.Delete))
+                                        {
+                                            @if (!role.IsStatic)
+                                            {
+                                                <form id="@role.Id-deleteForm" asp-page-handler="Delete" asp-route-id="@role.Id" method="post" style="display:none;"></form>
+                                                <a href="javascript:;" class="text-body" onclick="showRoleDeleteConfirmation('@role.Id', '@role.Name')">
+                                                    <i class="ti ti-trash ti-sm"></i>
+                                                </a>
+                                            }
                                         }
                                     </div>
                                 </td>

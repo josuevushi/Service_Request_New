@@ -1,5 +1,8 @@
 @page
+@using Microsoft.AspNetCore.Authorization
+@using Dn.ServiceRequest.Permissions
 @model Dn.ServiceRequest.Web.Pages.Admin.GroupeTypeAdminModel
+@inject IAuthorizationService AuthorizationService
 @{
     Layout = "Layouts/_HorizontalLayout";
     ViewData["Title"] = "Gestion des Types par Groupe";
@@ -32,9 +35,12 @@
         <div class="card">
             <div class="card-header border-bottom d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0">Liste des Associations Type-Groupe</h5>
-                <button class="btn btn-primary" data-bs-toggle="offcanvas" data-bs-target="#createGroupeTypeOffcanvas">
-                    <i class="ti ti-plus me-1"></i> Associer un Type
-                </button>
+                @if (await AuthorizationService.IsGrantedAsync(ServiceRequestPermissions.GroupeTypes.Create))
+                {
+                    <button class="btn btn-primary" data-bs-toggle="offcanvas" data-bs-target="#createGroupeTypeOffcanvas">
+                        <i class="ti ti-plus me-1"></i> Associer un Type
+                    </button>
+                }
             </div>
             <div class="card-datatable table-responsive">
                 <table id="groupeTypeTable" class="table border-top">
@@ -61,13 +67,19 @@
                                 </td>
                                 <td>
                                     <div class="d-flex align-items-center">
-                                        <a href="javascript:;" class="text-body edit-gt-button" data-id="@gt.Id" data-bs-toggle="offcanvas" data-bs-target="#editGroupeTypeOffcanvas">
-                                            <i class="ti ti-edit ti-sm me-2"></i>
-                                        </a>
-                                        <form id="@gt.Id-deleteForm" asp-page-handler="Delete" asp-route-id="@gt.Id" method="post" style="display:none;"></form>
-                                        <a href="javascript:;" class="text-body" onclick="showDeleteConfirmation('@gt.Id', '@typeNom', '@groupeNom')">
-                                            <i class="ti ti-trash ti-sm"></i>
-                                        </a>
+                                        @if (await AuthorizationService.IsGrantedAsync(ServiceRequestPermissions.GroupeTypes.Update))
+                                        {
+                                            <a href="javascript:;" class="text-body edit-gt-button" data-id="@gt.Id" data-bs-toggle="offcanvas" data-bs-target="#editGroupeTypeOffcanvas">
+                                                <i class="ti ti-edit ti-sm me-2"></i>
+                                            </a>
+                                        }
+                                        @if (await AuthorizationService.IsGrantedAsync(ServiceRequestPermissions.GroupeTypes.Delete))
+                                        {
+                                            <form id="@gt.Id-deleteForm" asp-page-handler="Delete" asp-route-id="@gt.Id" method="post" style="display:none;"></form>
+                                            <a href="javascript:;" class="text-body" onclick="showDeleteConfirmation('@gt.Id', '@typeNom', '@groupeNom')">
+                                                <i class="ti ti-trash ti-sm"></i>
+                                            </a>
+                                        }
                                     </div>
                                 </td>
                             </tr>

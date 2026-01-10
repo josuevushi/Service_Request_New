@@ -1,5 +1,8 @@
 @page
+@using Microsoft.AspNetCore.Authorization
+@using Dn.ServiceRequest.Permissions
 @model Dn.ServiceRequest.Web.Pages.Admin.FamilleAdminModel
+@inject IAuthorizationService AuthorizationService
 @{
     Layout = "Layouts/_HorizontalLayout";
     ViewData["Title"] = "Gestion des Familles";
@@ -30,9 +33,12 @@
         <div class="card">
             <div class="card-header border-bottom d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0">Liste des Familles</h5>
-                <button class="btn btn-primary" data-bs-toggle="offcanvas" data-bs-target="#createFamilleOffcanvas">
-                    <i class="ti ti-plus me-1"></i> Ajouter une Famille
-                </button>
+                @if (await AuthorizationService.IsGrantedAsync(ServiceRequestPermissions.Familles.Create))
+                {
+                    <button class="btn btn-primary" data-bs-toggle="offcanvas" data-bs-target="#createFamilleOffcanvas">
+                        <i class="ti ti-plus me-1"></i> Ajouter une Famille
+                    </button>
+                }
             </div>
             <div class="card-datatable table-responsive">
                 <table id="familleTable" class="table border-top">
@@ -59,13 +65,19 @@
                                 </td>
                                 <td>
                                     <div class="d-flex align-items-center">
-                                        <a href="javascript:;" class="text-body edit-famille-button" data-id="@famille.Id" data-bs-toggle="offcanvas" data-bs-target="#editFamilleOffcanvas">
-                                            <i class="ti ti-edit ti-sm me-2"></i>
-                                        </a>
-                                        <form id="@famille.Id-deleteForm" asp-page-handler="Delete" asp-route-id="@famille.Id" method="post" style="display:none;"></form>
-                                        <a href="javascript:;" class="text-body" onclick="showDeleteConfirmation('@famille.Id', '@famille.Nom')">
-                                            <i class="ti ti-trash ti-sm"></i>
-                                        </a>
+                                        @if (await AuthorizationService.IsGrantedAsync(ServiceRequestPermissions.Familles.Update))
+                                        {
+                                            <a href="javascript:;" class="text-body edit-famille-button" data-id="@famille.Id" data-bs-toggle="offcanvas" data-bs-target="#editFamilleOffcanvas">
+                                                <i class="ti ti-edit ti-sm me-2"></i>
+                                            </a>
+                                        }
+                                        @if (await AuthorizationService.IsGrantedAsync(ServiceRequestPermissions.Familles.Delete))
+                                        {
+                                            <form id="@famille.Id-deleteForm" asp-page-handler="Delete" asp-route-id="@famille.Id" method="post" style="display:none;"></form>
+                                            <a href="javascript:;" class="text-body" onclick="showDeleteConfirmation('@famille.Id', '@famille.Nom')">
+                                                <i class="ti ti-trash ti-sm"></i>
+                                            </a>
+                                        }
                                     </div>
                                 </td>
                             </tr>

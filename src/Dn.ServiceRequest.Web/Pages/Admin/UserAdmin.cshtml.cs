@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Volo.Abp.Identity;
+using System.Linq;
 
 namespace Dn.ServiceRequest.Web.Pages.Admin;
 
@@ -15,6 +16,7 @@ public class UserAdminModel : ServiceRequestPageModel
 
     public IReadOnlyList<IdentityUserDto> Users { get; set; } = new List<IdentityUserDto>();
     public IReadOnlyList<IdentityRoleDto> Roles { get; set; } = new List<IdentityRoleDto>();
+    public Dictionary<Guid, IReadOnlyList<string>> UserRoles { get; set; } = new();
 
     [BindProperty]
     public IdentityUserCreateDto NewUser { get; set; } = new();
@@ -40,6 +42,12 @@ public class UserAdminModel : ServiceRequestPageModel
 
         var roleResult = await _identityRoleAppService.GetListAsync(new GetIdentityRolesInput { MaxResultCount = 1000 });
         Roles = roleResult.Items;
+
+        foreach (var u in Users)
+        {
+            var userRoles = await _identityUserAppService.GetRolesAsync(u.Id);
+            UserRoles[u.Id] = userRoles.Items.Select(r => r.Name).ToList();
+        }
     }
 
     public async Task<IActionResult> OnPostCreateAsync()

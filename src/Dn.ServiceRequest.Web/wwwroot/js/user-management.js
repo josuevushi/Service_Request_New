@@ -115,6 +115,10 @@ function submitFormAndSetSuccessFlag(form, flagName) {
 
     const isVerifiedCheckbox = document.getElementById('EditUser_IsVerified');
     if (isVerifiedCheckbox) isVerifiedCheckbox.checked = isVerified.toLowerCase() === 'true';
+
+    // Set roles in Select2
+    const userRoles = editButton.getAttribute('data-roles') ? editButton.getAttribute('data-roles').split(',') : [];
+    $('#EditUser_RoleNames').val(userRoles).trigger('change');
   };
 
   // Event Delegation for "Edit User" buttons (pencil icon)
@@ -258,6 +262,18 @@ function submitFormAndSetSuccessFlag(form, flagName) {
       // if fields are invalid
       return;
     });
+
+  // Initialize Select2 for role selection
+  const select2 = $('.select2');
+  if (select2.length) {
+    select2.each(function () {
+      var $this = $(this);
+      $this.wrap('<div class="position-relative"></div>').select2({
+        placeholder: 'Sélectionner les rôles',
+        dropdownParent: $this.parent()
+      });
+    });
+  }
 })();
 
 // User DataTable initialization
@@ -278,6 +294,7 @@ $(document).ready(function () {
   $('#userTable').DataTable({
     order: [[1, 'desc']],
     displayLength: 7,
+    searching: true,
     dom:
       // Datatable DOM positioning
       '<"row"' +
