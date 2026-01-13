@@ -95,7 +95,7 @@ const radialBarChartConfig = {
     lineCap: 'round'
   },
   series: [pourcentageGraphique],
-  labels: ['Progression des tickets']
+  labels: ['Délai consommé (SLA)']
 };
 
 if (radialBarChartEl) {
