@@ -50,7 +50,7 @@
                             <th>Id</th>
                             <th>Nom</th>
                             <th>Famille</th>
-                            <th>SLA (Jours)</th>
+                            <th>SLA (Heures)</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -119,8 +119,8 @@
                 </select>
             </div>
             <div class="mb-6">
-                <label class="form-label" asp-for="NewType.Sla">SLA (Jours)</label>
-                <input type="number" class="form-control" asp-for="NewType.Sla" placeholder="5" />
+                <label class="form-label" asp-for="NewType.Sla">SLA (Heures)</label>
+                <input type="number" class="form-control" asp-for="NewType.Sla" placeholder="24" />
             </div>
             <div class="mb-6">
                 <label class="form-label" asp-for="NewType.Json_form">JSON Form</label>
@@ -156,8 +156,8 @@
                 </select>
             </div>
             <div class="mb-6">
-                <label class="form-label" asp-for="Type.Sla">SLA (Jours)</label>
-                <input type="number" class="form-control" asp-for="Type.Sla" id="EditType_Sla" placeholder="5" />
+                <label class="form-label" asp-for="Type.Sla">SLA (Heures)</label>
+                <input type="number" class="form-control" asp-for="Type.Sla" id="EditType_Sla" placeholder="24" />
             </div>
             <div class="mb-6">
                 <label class="form-label" asp-for="Type.Json_form">JSON Form</label>

@@ -39,6 +39,15 @@ namespace Dn.ServiceRequest.Types
             _userRepository=userRepository;
 
         }
+        
+        public override async Task<PagedResultDto<TypeDto>> GetListAsync(PagedAndSortedResultRequestDto input)
+        {
+            if (input.MaxResultCount < 1000)
+            {
+                input.MaxResultCount = 1000;
+            }
+            return await base.GetListAsync(input);
+        }
 public async Task<dynamic> GetTypeDetails(string typeId)
 {
     var groupes = await _repositoryGroupe.GetQueryableAsync();
