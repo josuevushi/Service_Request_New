@@ -41,10 +41,10 @@ namespace Dn.ServiceRequest.Web.Pages.Account
             {               
                 var adminUser=await _userRepository.FindByNormalizedUserNameAsync(LoginModel.Username);
                 if(adminUser!=null){
-              ///  LdapConnection connection = new LdapConnection("cd.ebsafrica.com");
-               // NetworkCredential credential = new NetworkCredential(LoginModel.Username, LoginModel.Password);
-              //  connection.Credential = credential;
-              //  connection.Bind();
+                LdapConnection connection = new LdapConnection("cd.ebsafrica.com");
+                NetworkCredential credential = new NetworkCredential(LoginModel.Username, LoginModel.Password);
+                connection.Credential = credential;
+               connection.Bind();
                
                 var token=await _UserManager.GenerateUserTokenAsync(adminUser,"PasswordlessLoginProvider","passwordless-auth");
                 PasswordlessLoginUrl=Url.Action("Login","Passwordless",new{token=token,userId=adminUser.Id.ToString()},Request.Scheme);

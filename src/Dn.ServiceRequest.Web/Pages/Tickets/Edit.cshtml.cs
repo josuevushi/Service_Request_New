@@ -25,6 +25,11 @@ namespace Dn.ServiceRequest.Web.Pages.Tickets
         {
             Id = id;
             Ticket = await _ticketAppService.GetUnTicketAsync(id.ToString());
+            if (Ticket == null)
+            {
+                _logger.LogWarning("Ticket non trouvé pour l'Id : {Id}", id);
+                return;
+            }
             RemainingTimeMessage = GetRemainingTime(Ticket);
             _logger.LogInformation("Id reçu : {Id}", id);
         }
@@ -41,25 +46,30 @@ namespace Dn.ServiceRequest.Web.Pages.Tickets
                 return "Délai dépassé";
             }
 
-            if (remaining.TotalDays >= 1)
-            {
-                int days = (int)Math.Floor(remaining.TotalDays);
-                return $"il vous reste {days} {(days > 1 ? "jours" : "jour")}";
-            }
+            var parts = new System.Collections.Generic.List<string>();
+            if (remaining.Days > 0)
+                parts.Add($"{remaining.Days} {(remaining.Days > 1 ? "jours" : "jour")}");
             
-            if (remaining.TotalHours >= 1)
+            if (remaining.Hours > 0)
+                parts.Add($"{remaining.Hours} {(remaining.Hours > 1 ? "heures" : "heure")}");
+            
+            if (remaining.Minutes > 0)
+                parts.Add($"{remaining.Minutes} {(remaining.Minutes > 1 ? "minutes" : "minute")}");
+
+            if (parts.Count == 0)
             {
-                int hours = (int)Math.Floor(remaining.TotalHours);
-                int minutes = remaining.Minutes;
-                if (minutes > 0)
-                {
-                    return $"il vous reste {hours} {(hours > 1 ? "heures" : "heure")} et {minutes} {(minutes > 1 ? "minutes" : "minute")}";
-                }
-                return $"il vous reste {hours} {(hours > 1 ? "heures" : "heure")}";
+                return "il vous reste moins d'une minute";
             }
 
-            int mins = (int)Math.Floor(remaining.TotalMinutes);
-            return $"il vous reste {mins} {(mins > 1 ? "minutes" : "minute")}";
+            if (parts.Count == 1)
+            {
+                return "il vous reste " + parts[0];
+            }
+
+            var finalPart = parts[parts.Count - 1];
+            parts.RemoveAt(parts.Count - 1);
+            
+            return "il vous reste " + string.Join(", ", parts) + " et " + finalPart;
         }
     }
 }

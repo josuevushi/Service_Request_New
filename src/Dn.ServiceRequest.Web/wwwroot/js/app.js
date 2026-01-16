@@ -250,7 +250,7 @@ $(function () {
       if (result.length > 0) {
         const data = result[0];
         // SLA
-        document.getElementById('sla').value = formatTemps(data.sla);
+        document.getElementById('sla').value = formatTemps(data.sla * 3600 * 1000);
         // Catégorie
         document.getElementById('categorie').value = data.categorie;
         // Groupe

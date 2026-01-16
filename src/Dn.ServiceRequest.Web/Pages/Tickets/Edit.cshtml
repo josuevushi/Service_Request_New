@@ -184,6 +184,12 @@
                 <div class="demo-inline-spacing d-flex align-items-center gap-2">
                     <!--button id="StartButtonS" type="button" class="btn btn-primary hidden" disabled> <span class="spinner-border spinner-border-sm me-2"></span> Démarer le travaille</button-->
 
+                    @if (Model.Ticket == null)
+                    {
+                        <div class="alert alert-danger">Ticket introuvable ou accès non autorisé.</div>
+                        return;
+                    }
+
                     @{
                         var status = Model.Ticket.Status.ToString();
                     }

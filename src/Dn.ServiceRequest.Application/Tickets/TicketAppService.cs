@@ -101,7 +101,7 @@ namespace Dn.ServiceRequest.Tickets
                 join usr in await _userRepository.GetQueryableAsync()
                     on tck.CreatorId equals usr.Id
                 where tck.Id == ticketGuid
-                where usr.Id == CurrentUser.Id
+                //where usr.Id == CurrentUser.Id
                 select new UnTicketsDto
                 {
                     Id = tck.Id,
@@ -481,7 +481,7 @@ namespace Dn.ServiceRequest.Tickets
                 Description = data.Description,
                 Json_form = data.JsonFrom,
                 Type_id = typeGuid,
-                EstimateDate = DateEstimeeAvecConges(maintenant, type.Sla),
+                EstimateDate = DateEstimeeAvecConges(maintenant, (double)type.Sla * 3600 * 1000),
                 Status = Status.Open,
                 Numero = await GenerateTicketNumberAsync()
             };
@@ -532,7 +532,7 @@ namespace Dn.ServiceRequest.Tickets
                 Description = description,
                 Json_form = json_from,
                 Type_id = typeGuid,
-                EstimateDate = DateEstimeeAvecConges(maintenant, type.Sla),
+                EstimateDate = DateEstimeeAvecConges(maintenant, (double)type.Sla * 3600 * 1000),
                 Status = Status.Open,
                 Numero = await GenerateTicketNumberAsync()
             };
